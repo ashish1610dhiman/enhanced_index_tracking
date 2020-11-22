@@ -33,7 +33,7 @@ def deviation(price,returns,C,X_1,t):
         z.append(q_jt*X_1["security_{}".format(j)])
     return (theta*price["index"][t]-xsum(z))
 
-def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho):
+def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho,output):
     #from EIT_kernel import excess_return
     #from EIT_kernel import deviation
     """ Read the input index file """
@@ -56,7 +56,7 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho):
         X_0[kernel.index(j)]=(C/k)/price[j].iloc[0]
     """ Define the Linear Relaxation of EIT and necessary problem variables """
     #Solve EIT Kernel
-    LP = mip.Model("EIT_kernel",mip.MAXIMIZE)
+    LP = Model("Linear Relaxation of EIT")
     #Gives units of jth stock in rebalaced portfolio
     X_1 = {x:LP.add_var(name="x1_{}".format(x),var_type="C",lb=0) for x in list(returns.columns)[1:]}
     #Binary Variable depicting if investor holds stock j
@@ -73,7 +73,7 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho):
     u={x:LP.add_var(name="u_t{}".format(x),var_type="C",lb=0) for x in list(returns.index)}
     """ Add Objective and Constraints """
     """ Objective """
-    LP+=excess_return(returns,price,X_1,C)
+    LP.objective=maximize(excess_return(returns,price,X_1,C))
     """ Constarints """
     stocks=list(returns.columns)[1:]  
     for stock in stocks:
@@ -90,21 +90,21 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho):
         #LP+=(b[stock]<=(nuh*C-X_0[j-1]*q_jT)*w[stock]) #Eqn 14
         #LP+=(s[stock]<=X_0[j-1]*q_jT*w[stock]) # Eqn 15
     #Constraint from eqn. 6
-    LP+=(mip.xsum(y.values())<=k)
+    LP+=(xsum(y.values())<=k)
     #Constraint from eqn. 7
-    LP+=(mip.xsum([X_1[stock]*price[stock][T] for stock in stocks])<=C)
+    LP+=(xsum([X_1[stock]*price[stock][T] for stock in stocks])<=C)
     #Constraint from eqn. 10
-    LP+=(mip.xsum([c_b*b[stock]+c_s*s[stock]+f*w[stock] for stock in stocks])<=pho*C)
+    LP+=(xsum([c_b*b[stock]+c_s*s[stock]+f*w[stock] for stock in stocks])<=pho*C)
     for t in range(1,T+1):
         #Constraint from eqn. 4
         LP+=(d[t]-u[t]==deviation(price,returns,C,X_1,t))
     #Constraint from eqn. 16
-    LP+=(mip.xsum([d[t]+u[t] for t in range(1,T+1)])<=xii*C)
+    LP+=(xsum([d[t]+u[t] for t in range(1,T+1)])<=xii*C)
     print("Solving EIT(kernel)\n***************************************************")
     LP.emphasis=1
     status=LP.optimize()
     print("***************************************************\n")
-    print("Optimisation Status={},Objective Value={}".format(str(status),str(round(LP.objective_value,3))))
+    print("Optimisation Status={},Objective Value={}".format(str(status.value),str(round(LP.objective_value,3))))
     print("OPTIMAL(0), ERROR(-1), INFEASIBLE(1), UNBOUNDED(2)")
     result=pd.DataFrame()
     for stock in stocks:
@@ -117,13 +117,13 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho):
         temp["b"]=[b[stock].x]
         temp["s"]=[s[stock].x]
         result=result.append(temp,ignore_index=True)
-    result.to_csv("EIT_kernel_result_index_{}.csv".format(file),index=False)
-    LP.write("EIT_kernel_for_index_{}.lp".format(file))
+    result.to_csv(output+"EIT_kernel_result_index_{}.csv".format(file),index=False)
+    LP.write(output+"EIT_kernel_for_index_{}.lp".format(file))
     return(status,round(LP.objective_value,3))
 
 
    
-def plot_results(kernel,result,file,T):
+def plot_results(kernel,result,file,T,output):
     import pandas as pd
     import numpy as np
     from matplotlib.collections import LineCollection
@@ -179,4 +179,4 @@ def plot_results(kernel,result,file,T):
               y2=port_2[:,1]-3*np.std(portfolio_return),
               color=(255/255,87/255,86/255,0.2))
     plt.title("EIT(kernel) performance for index={}\n".format(file))
-    plt.savefig("EIT_kernel_for_index_{}.jpg".format(file),dpi=250)
+    plt.savefig(output+"EIT_kernel_for_index_{}.jpg".format(file),dpi=250)
