@@ -9,14 +9,14 @@ import os
 import pandas as pd
 import numpy as np
 import random
-from mip import *
+from mip import Model, xsum, maximize
 from matplotlib.collections import LineCollection
 import matplotlib.pyplot as plt
 import sys
 
 """ Define the functions for Excess Return and Deviation Calculation """
 def excess_return(returns,price,X_1,C):
-    import mip.model as mip
+    #import mip.model as mip
     z=[]
     T=returns.shape[0]
     for t in range(1,T+1):
@@ -26,17 +26,32 @@ def excess_return(returns,price,X_1,C):
             q_jT=price["security_{}".format(j)][T]
             portfolio_return.append(r_jt*q_jT*(1/T)*X_1["security_{}".format(j)])
         benchmark_return=returns["index"][t]*C/T
-        z.append(mip.xsum(portfolio_return)-benchmark_return)
-    return (mip.xsum(z))
+        z.append(xsum(portfolio_return)-benchmark_return)
+    return (xsum(z))
+
+#util test func
+def excess_return_val(returns,price,X_1,C):
+    #import mip.model as mip
+    z=[]
+    T=returns.shape[0]
+    for t in range(1,T+1):
+        portfolio_return=[]
+        for j in range(1,returns.shape[1]):
+            r_jt=returns["security_{}".format(j)][t]
+            q_jT=price["security_{}".format(j)][T]
+            portfolio_return.append(r_jt*q_jT*(1/T)*X_1["security_{}".format(j)].x)
+        benchmark_return=returns["index"][t]*C/T
+        z.append(sum(portfolio_return)-benchmark_return)
+    return (sum(z))
 
 def deviation(price,returns,C,X_1,t):
-    import mip.model as mip
+    #import mip.model as mip
     theta=C/price["index"].iloc[-1]
     z=[] #For d
     for j in range(1,returns.shape[1]):
         q_jt=price["security_{}".format(j)][t]
         z.append(q_jt*X_1["security_{}".format(j)])
-    return (theta*price["index"][t]-mip.xsum(z))
+    return (theta*price["index"][t]-xsum(z))
 
 
 
@@ -44,17 +59,25 @@ def deviation(price,returns,C,X_1,t):
 
 """ Read CMD line arguments """
 print ("Running Linear Relaxation of EIT")
-if len(sys.argv)!=6:
-    print("Error, Wrong no. of arguments")
-    sys.exit(1)
+if len(sys.argv)!=7:
+    print("Error, Wrong no. of arguments, using default arguments")
+    file=1
+    T=200
+    xii=0.8
+    k=12
+    nuh=0.65
+    output="./experiment_1/"
+    #sys.exit(1)
 else:
     file=int(sys.argv[1])
     T=int(sys.argv[2])
     xii=float(sys.argv[3]) #Proportion cosntant for TrE
     k=int(sys.argv[4])
-    current_portfolio_random=int(sys.argv[5]) #If X_0 to be randomly selected otherwise 0
+    current_portfolio_random=int(sys.argv[5])#If X_0 to be randomly selected otherwise 0
+    output="./"+str(sys.argv[6])+"/"
 
-
+if not os.path.exists(output):
+    os.makedirs(output)
 
 """ Read the input index file """
 price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
@@ -88,7 +111,7 @@ for j in random.sample(range(1,n+1),k):
 """ Define the Linear Relaxation of EIT and necessary problem variables """
 print("Solving LP(EIT)\n***************************************************")
 #Solve LP Relaxation
-LP = mip.Model("Linear Relaxation of EIT",mip.MAXIMIZE)
+LP = Model("Linear Relaxation of EIT")
 
 #Gives units of jth stock in rebalaced portfolio
 X_1 = {x:LP.add_var(name="x1_{}".format(x),var_type="C",lb=0) for x in list(returns.columns)[1:]}
@@ -111,7 +134,7 @@ u={x:LP.add_var(name="u_t{}".format(x),var_type="C",lb=0) for x in list(returns.
 
 """ Add Objective and Constraints """
 """ Objective """
-LP+=excess_return(returns,price,X_1,C)
+LP.objective=maximize(excess_return(returns,price,X_1,C))
 
 """ Constarints """    
 for j in range(1,returns.shape[1]):
@@ -131,14 +154,14 @@ for j in range(1,returns.shape[1]):
 
 
 #Constraint from eqn. 6
-LP+=(mip.xsum(y.values())<=k)
+LP+=(xsum(y.values())<=k)
 
 stocks=["security_{}".format(j) for j in range(1,returns.shape[1])]
 #Constraint from eqn. 7
-LP+=(mip.xsum([X_1[stock]*price[stock][T] for stock in stocks])==C)
+LP+=(xsum([X_1[stock]*price[stock][T] for stock in stocks])==C)
 
 #Constraint from eqn. 10
-LP+=(mip.xsum([c_b*b[stock]+c_s*s[stock]+f*w[stock] for stock in stocks])<=pho*C)
+LP+=(xsum([c_b*b[stock]+c_s*s[stock]+f*w[stock] for stock in stocks])<=pho*C)
 
 
 for t in range(1,T+1):
@@ -146,7 +169,7 @@ for t in range(1,T+1):
     LP+=(d[t]-u[t]==deviation(price,returns,C,X_1,t))
 
 #Constraint from eqn. 16
-LP+=(mip.xsum([d[t]+u[t] for t in range(1,T+1)])<=xii*C)
+LP+=(xsum([d[t]+u[t] for t in range(1,T+1)])<=xii*C)
 
 
 """ Solve the problem and collect the results """
@@ -166,14 +189,14 @@ for stock in stocks:
     temp["s"]=[s[stock].x]
     result=result.append(temp,ignore_index=True)
 
-#result.to_csv("result_index_{}.csv".format(file),index=False)
-file1 = open("EIT_LP_details.txt","w+")
+result.to_csv(output+"result_index_{}.csv".format(file),index=False)
+file1 = open(output+"EIT_LP_details.txt","w+")
 file1.writelines("LP(EIT) status={}\nObjective={}\n".format(str(LP.status.value),str(round(LP.objective_value,3))))
 file1.writelines("xii={},k={},lambda={},nuh={}".format(xii,k,lamda,nuh))
 file1.close()
 
 #Write LP model to a file
-LP.write("LP_EIT_index_{}.lp".format(file))
+LP.write(output+"LP_EIT_index_{}.lp".format(file))
 
 if LP.status.value!=0:
     sys.exit(1)
