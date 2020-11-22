@@ -36,7 +36,7 @@ def sort_securities(result,q_T,objective,lamda,C):
     return (sorted_securities)
 
 def excess_return(returns,price,X_1,C):
-    import pulp as pulp
+    #import pulp as pulp
     T=returns.shape[0]
     z=[]
     for t in range(1,T+1):
@@ -65,8 +65,8 @@ def create_buckets(L,m,lbuck):
     return buckets
 
 def dummy_problem(T,C,file):
-    import pulp as pulp
-    from sort_and_buckets import excess_return
+    #from src.sort_and_buckets import excess_return
+    #import pandas as pd
     price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
     price=price[0:T+1]
     returns=(price-price.shift(1))/price.shift(1)

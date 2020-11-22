@@ -16,10 +16,10 @@ def excess_return(returns,price,X_1,C):
     T=returns.shape[0]
     for t in range(1,T+1):
         portfolio_return=[]
-        for j in range(1,returns.shape[1]):
-            r_jt=returns["security_{}".format(j)][t]
-            q_jT=price["security_{}".format(j)][T]
-            portfolio_return.append(r_jt*q_jT*(1/T)*X_1["security_{}".format(j)])
+        for j in list(returns.columns)[1:]:
+            r_jt=returns[j][t]
+            q_jT=price[j][T]
+            portfolio_return.append(r_jt*q_jT*(1/T)*X_1[j])
         benchmark_return=returns["index"][t]*C/T
         z.append(xsum(portfolio_return)-benchmark_return)
     return (xsum(z))
@@ -28,16 +28,16 @@ def deviation(price,returns,C,X_1,t):
     #import mip.model as mip
     theta=C/price["index"].iloc[-1]
     z=[] #For d
-    for j in range(1,returns.shape[1]):
-        q_jt=price["security_{}".format(j)][t]
-        z.append(q_jt*X_1["security_{}".format(j)])
+    for j in list(returns.columns)[1:]:
+        q_jt=price[j][t]
+        z.append(q_jt*X_1[j])
     return (theta*price["index"][t]-xsum(z))
 
 def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho,output):
     #from EIT_kernel import excess_return
     #from EIT_kernel import deviation
     """ Read the input index file """
-    price=pd.read_csv("../input/index-weekly-data/index_{}.csv".format(file))
+    price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
     price=price[["index"]+kernel][0:T+1]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)
@@ -52,7 +52,7 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho,output):
     X_0=np.zeros((n,1)) #Gives units of jth stock in original portfolio
     T=returns.shape[0] #Training limit
     theta=C/price["index"][T]
-    for j in random.sample(kernel,k):
+    for j in random.sample(kernel,min(len(kernel),k)):
         X_0[kernel.index(j)]=(C/k)/price[j].iloc[0]
     """ Define the Linear Relaxation of EIT and necessary problem variables """
     #Solve EIT Kernel
@@ -73,9 +73,10 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho,output):
     u={x:LP.add_var(name="u_t{}".format(x),var_type="C",lb=0) for x in list(returns.index)}
     """ Add Objective and Constraints """
     """ Objective """
+    #print (returns.columns)
     LP.objective=maximize(excess_return(returns,price,X_1,C))
     """ Constarints """
-    stocks=list(returns.columns)[1:]  
+    stocks=list(returns.columns)[1:]
     for stock in stocks:
         q_jT=price[stock][T]
         if X_0[kernel.index(stock)]==0:
@@ -117,8 +118,8 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho,output):
         temp["b"]=[b[stock].x]
         temp["s"]=[s[stock].x]
         result=result.append(temp,ignore_index=True)
-    result.to_csv(output+"EIT_kernel_result_index_{}.csv".format(file),index=False)
-    LP.write(output+"EIT_kernel_for_index_{}.lp".format(file))
+    result.to_csv(output+"/EIT_kernel_result_index_{}.csv".format(file),index=False)
+    LP.write(output+"/EIT_kernel_for_index_{}.lp".format(file))
     return(status,round(LP.objective_value,3))
 
 
@@ -128,7 +129,7 @@ def plot_results(kernel,result,file,T,output):
     import numpy as np
     from matplotlib.collections import LineCollection
     import matplotlib.pyplot as plt
-    price=pd.read_csv("../input/index-weekly-data/index_{}.csv".format(file))
+    price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
     price=price[["index"]+kernel][0:T+1]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)
@@ -140,7 +141,7 @@ def plot_results(kernel,result,file,T,output):
     tracking=[1]
     portfolio_return=[]
     #Read full 290 weeks data
-    price=pd.read_csv("../input/index-weekly-data/index_{}.csv".format(file))
+    price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
     price=price[["index"]+kernel]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)
@@ -179,4 +180,4 @@ def plot_results(kernel,result,file,T,output):
               y2=port_2[:,1]-3*np.std(portfolio_return),
               color=(255/255,87/255,86/255,0.2))
     plt.title("EIT(kernel) performance for index={}\n".format(file))
-    plt.savefig(output+"EIT_kernel_for_index_{}.jpg".format(file),dpi=250)
+    plt.savefig(output+"/EIT_kernel_for_index_{}.jpg".format(file),dpi=250)
