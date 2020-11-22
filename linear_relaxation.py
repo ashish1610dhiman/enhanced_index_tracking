@@ -253,4 +253,4 @@ plt.fill_between(x=ind_2[:,0], y1=port_2[:,1]+3*np.std(portfolio_return[T:]),
                   color=(255/255,87/255,86/255,0.2))
 plt.title("Linear Relaxation of EIT for index={}\n".format(file))
 plt.suptitle("\nxii={},k={},lambda={},nuh={}".format(xii,k,lamda,nuh),fontsize=11)
-plt.savefig("LP_EIT for index_{}.jpg".format(file),dpi=250)
+plt.savefig(output+"LP_EIT for index_{}.jpg".format(file),dpi=250)
