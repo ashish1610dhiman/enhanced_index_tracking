@@ -65,6 +65,7 @@ if len(sys.argv)!=7:
     T=200
     xii=0.8
     k=12
+    pho=0.4
     nuh=0.65
     output="./experiment_1/"
     #sys.exit(1)
@@ -73,7 +74,7 @@ else:
     T=int(sys.argv[2])
     xii=float(sys.argv[3]) #Proportion cosntant for TrE
     k=int(sys.argv[4])
-    current_portfolio_random=int(sys.argv[5])#If X_0 to be randomly selected otherwise 0
+    pho=int(sys.argv[5])#If X_0 to be randomly selected otherwise 0
     output="./"+str(sys.argv[6])+"/"
 
 if not os.path.exists(output):
@@ -87,12 +88,12 @@ returns.drop([0],axis=0,inplace=True)
 
 
 """ Define Parameters of the model and create input vars """
-C=100000 #Capital available
+C=1000000 #Capital available
 tau=0 #Additional Cash Fund
 lamda=1/(100*C) # lower_bound for capital invested in jth stock
-nuh=0.65  # upper_bound
+#nuh=0.65  # upper_bound
 #k= 12 #Cardinality Constraint
-pho=0.4 #Transaction Cost Proportion
+#pho=0.4 #Transaction Cost Proportion
 c_b=0.01 #Constant for buying cost
 c_s=0.01 #Constant for selling cost
 f=min(price.min())/3 #Fixed Txn Cost

@@ -67,7 +67,7 @@ def create_buckets(L,m,lbuck):
 def dummy_problem(T,C,file):
     import pulp as pulp
     from sort_and_buckets import excess_return
-    price=pd.read_csv("../input/index-weekly-data/index_{}.csv".format(file))
+    price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
     price=price[0:T+1]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)
