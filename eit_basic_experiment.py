@@ -171,6 +171,7 @@ class TestEitBasic:
             temp["z_value"] = [z]
             execution_result = execution_result.append(temp, ignore_index=True)
         self.best_objective_eit = z_low
+        return (execution_result)
         print("+----------------------------------------------------+")
         print("    Step 3 complete in {:.2f}s".format(time.time() - s))
         print("+----------------------------------------------------+")
@@ -180,3 +181,13 @@ class TestEitBasic:
         print("BEST Objective from EIT:{:.3f}".format(self.best_objective_eit))
         print("BEST Objective from Linear Relaxation:{:.3f}".format(self.objective_linear))
         print("+----------------------------------------------------+")
+
+
+    def run_experiment(self,verbose=True):
+        failure, z_lp, result_lp = self.step_1(verose=verbose)
+        kernel, buckets, L, Nb = self.step_2a(failure, z_lp, result_lp,verbose=verbose)
+        z, failure = self.step_2b(kernel, buckets, verbose=verbose)
+        execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,verbose=verbose)
+        if verbose:
+            self.print_result()
+        return (execution_result)
