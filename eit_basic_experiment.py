@@ -181,10 +181,13 @@ class TestEitBasic:
         print("+----------------------------------------------------+")
 
     def print_result(self):
-        print("+----------------------------------------------------+")
-        print("BEST Objective from EIT:{:.3f}".format(self.best_objective_eit))
-        print("BEST Objective from Linear Relaxation:{:.3f}".format(self.objective_linear))
-        print("+----------------------------------------------------+")
+        if (self.objective_linear !=None) and (self.best_objective_eit!=None):
+            print("+----------------------------------------------------+")
+            print("BEST Objective from EIT:{:.3f}".format(self.best_objective_eit))
+            print("BEST Objective from Linear Relaxation:{:.3f}".format(self.objective_linear))
+            print("+----------------------------------------------------+")
+        else:
+            print ("either of 2 None")
 
 
     def run_experiment(self,verbose=True):
