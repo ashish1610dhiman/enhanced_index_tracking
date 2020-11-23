@@ -12,7 +12,7 @@ class TestEitBasic:
 
     def __init__(self, **kwargs):
         #print (kwargs)
-        self.__dict__.update({param_name: param_name for  param_name, param_value in kwargs.items()})
+        self.__dict__.update({param_name: param_value for  param_name, param_value in kwargs.items()})
         self.param_dict = kwargs
         self.best_objective_eit = None
         self.objective_linear = None
@@ -30,8 +30,8 @@ class TestEitBasic:
         out = os.system("python ./src/linear_relaxation.py {} {} {} {} {} {} {} {} {} {}". \
                         format(self.file, self.T, self.xii, self.k, self.pho, self.nuh, self.C,\
                                self.lamda, self.f, self.output))
+        #print (out)
         assert out == 0, "Error in linear relaxation"
-        sys.exit(1)
         text_file = open(self.output + "/EIT_LP_details.txt")
         lines = text_file.readlines()
         failure = bool(int(lines[0][-2]))
