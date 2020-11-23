@@ -33,34 +33,34 @@ constr(25):  -10.65029 x1_security_19 + 0.00100 y_security_19 <= -0
 constr(26):  10.65029 x1_security_19 -800000 y_security_19 <= -0
 constr(27):  -10.65029 x1_security_19 + b_security_19 - s_security_19 = -129870.12997
 constr(28):  -800000 w_security_19 + b_security_19 + s_security_19 <= -0
-constr(29):  y_security_14 - w_security_14 = -0
-constr(30):  -20.94557 x1_security_14 + 0.00100 y_security_14 <= -0
-constr(31):  20.94557 x1_security_14 -800000 y_security_14 <= -0
-constr(32):  -20.94557 x1_security_14 + b_security_14 - s_security_14 = -0
-constr(33):  -800000 w_security_14 + b_security_14 + s_security_14 <= -0
-constr(34):  -207.68060 x1_security_15 + 0.00100 y_security_15 <= -0
-constr(35):  207.68060 x1_security_15 -800000 y_security_15 <= -0
-constr(36):  -207.68060 x1_security_15 + b_security_15 - s_security_15 = -195488.72181
-constr(37):  -800000 w_security_15 + b_security_15 + s_security_15 <= -0
-constr(38):  -7.10019 x1_security_29 + 0.00100 y_security_29 <= -0
-constr(39):  7.10019 x1_security_29 -800000 y_security_29 <= -0
-constr(40):  -7.10019 x1_security_29 + b_security_29 - s_security_29 = -208550.57348
-constr(41):  -800000 w_security_29 + b_security_29 + s_security_29 <= -0
-constr(42):  -48.90257 x1_security_23 + 0.00100 y_security_23 <= -0
-constr(43):  48.90257 x1_security_23 -800000 y_security_23 <= -0
-constr(44):  -48.90257 x1_security_23 + b_security_23 - s_security_23 = -289390.75628
-constr(45):  -800000 w_security_23 + b_security_23 + s_security_23 <= -0
-constr(46):  -13.66787 x1_security_8 + 0.00100 y_security_8 <= -0
-constr(47):  13.66787 x1_security_8 -800000 y_security_8 <= -0
-constr(48):  -13.66787 x1_security_8 + b_security_8 - s_security_8 = -98039.21570
-constr(49):  -800000 w_security_8 + b_security_8 + s_security_8 <= -0
-constr(50):  -9.21250 x1_security_17 + 0.00100 y_security_17 <= -0
-constr(51):  9.21250 x1_security_17 -800000 y_security_17 <= -0
-constr(52):  -9.21250 x1_security_17 + b_security_17 - s_security_17 = -80941.98380
-constr(53):  -800000 w_security_17 + b_security_17 + s_security_17 <= -0
+constr(29):  -20.94557 x1_security_14 + 0.00100 y_security_14 <= -0
+constr(30):  20.94557 x1_security_14 -800000 y_security_14 <= -0
+constr(31):  -20.94557 x1_security_14 + b_security_14 - s_security_14 = -70238.09524
+constr(32):  -800000 w_security_14 + b_security_14 + s_security_14 <= -0
+constr(33):  -207.68060 x1_security_15 + 0.00100 y_security_15 <= -0
+constr(34):  207.68060 x1_security_15 -800000 y_security_15 <= -0
+constr(35):  -207.68060 x1_security_15 + b_security_15 - s_security_15 = -195488.72181
+constr(36):  -800000 w_security_15 + b_security_15 + s_security_15 <= -0
+constr(37):  -7.10019 x1_security_29 + 0.00100 y_security_29 <= -0
+constr(38):  7.10019 x1_security_29 -800000 y_security_29 <= -0
+constr(39):  -7.10019 x1_security_29 + b_security_29 - s_security_29 = -208550.57348
+constr(40):  -800000 w_security_29 + b_security_29 + s_security_29 <= -0
+constr(41):  -48.90257 x1_security_23 + 0.00100 y_security_23 <= -0
+constr(42):  48.90257 x1_security_23 -800000 y_security_23 <= -0
+constr(43):  -48.90257 x1_security_23 + b_security_23 - s_security_23 = -289390.75628
+constr(44):  -800000 w_security_23 + b_security_23 + s_security_23 <= -0
+constr(45):  -13.66787 x1_security_8 + 0.00100 y_security_8 <= -0
+constr(46):  13.66787 x1_security_8 -800000 y_security_8 <= -0
+constr(47):  -13.66787 x1_security_8 + b_security_8 - s_security_8 = -98039.21570
+constr(48):  -800000 w_security_8 + b_security_8 + s_security_8 <= -0
+constr(49):  -9.21250 x1_security_17 + 0.00100 y_security_17 <= -0
+constr(50):  9.21250 x1_security_17 -800000 y_security_17 <= -0
+constr(51):  -9.21250 x1_security_17 + b_security_17 - s_security_17 = -80941.98380
+constr(52):  -800000 w_security_17 + b_security_17 + s_security_17 <= -0
+constr(53):  y_security_25 - w_security_25 = -0
 constr(54):  -35.50096 x1_security_25 + 0.00100 y_security_25 <= -0
 constr(55):  35.50096 x1_security_25 -800000 y_security_25 <= -0
-constr(56):  -35.50096 x1_security_25 + b_security_25 - s_security_25 = -102997.21908
+constr(56):  -35.50096 x1_security_25 + b_security_25 - s_security_25 = -0
 constr(57):  -800000 w_security_25 + b_security_25 + s_security_25 <= -0
 constr(58):  -23.51938 x1_security_31 + 0.00100 y_security_31 <= -0
 constr(59):  23.51938 x1_security_31 -800000 y_security_31 <= -0
@@ -74,8 +74,8 @@ constr(66):  y_security_10 + y_security_7 + y_security_11 + y_security_26 + y_se
  + y_security_23 + y_security_8 + y_security_17 + y_security_25 + y_security_31 + y_security_9 <= 14
 constr(67):  15.26541 x1_security_10 + 36.29973 x1_security_7 + 24.49566 x1_security_11 + 122.92207 x1_security_26 + 83.60476 x1_security_21 + 63.19171 x1_security_28 + 10.65029 x1_security_19 + 20.94557 x1_security_14 + 207.68060 x1_security_15 + 7.10019 x1_security_29
  + 48.90257 x1_security_23 + 13.66787 x1_security_8 + 9.21250 x1_security_17 + 35.50096 x1_security_25 + 23.51938 x1_security_31 + 8.37823 x1_security_9 <= 1000000
-constr(68):  0.59760 w_security_10 + 0.59760 w_security_7 + 0.59760 w_security_11 + 0.59760 w_security_26 + 0.59760 w_security_21 + 0.59760 w_security_28 + 0.59760 w_security_19 + 0.59760 w_security_14 + 0.59760 w_security_15 + 0.59760 w_security_29
- + 0.59760 w_security_23 + 0.59760 w_security_8 + 0.59760 w_security_17 + 0.59760 w_security_25 + 0.59760 w_security_31 + 0.59760 w_security_9 + 0.01000 b_security_10 + 0.01000 b_security_7 + 0.01000 b_security_11 + 0.01000 b_security_26
+constr(68):  12 w_security_10 + 12 w_security_7 + 12 w_security_11 + 12 w_security_26 + 12 w_security_21 + 12 w_security_28 + 12 w_security_19 + 12 w_security_14 + 12 w_security_15 + 12 w_security_29
+ + 12 w_security_23 + 12 w_security_8 + 12 w_security_17 + 12 w_security_25 + 12 w_security_31 + 12 w_security_9 + 0.01000 b_security_10 + 0.01000 b_security_7 + 0.01000 b_security_11 + 0.01000 b_security_26
  + 0.01000 b_security_21 + 0.01000 b_security_28 + 0.01000 b_security_19 + 0.01000 b_security_14 + 0.01000 b_security_15 + 0.01000 b_security_29 + 0.01000 b_security_23 + 0.01000 b_security_8 + 0.01000 b_security_17 + 0.01000 b_security_25
  + 0.01000 b_security_31 + 0.01000 b_security_9 + 0.01000 s_security_10 + 0.01000 s_security_7 + 0.01000 s_security_11 + 0.01000 s_security_26 + 0.01000 s_security_21 + 0.01000 s_security_28 + 0.01000 s_security_19 + 0.01000 s_security_14
  + 0.01000 s_security_15 + 0.01000 s_security_29 + 0.01000 s_security_23 + 0.01000 s_security_8 + 0.01000 s_security_17 + 0.01000 s_security_25 + 0.01000 s_security_31 + 0.01000 s_security_9 <= 100000

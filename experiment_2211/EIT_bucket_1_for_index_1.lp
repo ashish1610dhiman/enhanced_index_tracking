@@ -47,7 +47,7 @@ constr(40):  y_security_10 + y_security_7 + y_security_11 + y_security_26 + y_se
  <= 14
 constr(41):  15.26541 x1_security_10 + 36.29973 x1_security_7 + 24.49566 x1_security_11 + 122.92207 x1_security_26 + 83.60476 x1_security_21 + 63.19171 x1_security_28 + 10.65029 x1_security_19 + 20.94557 x1_security_14 + 207.68060 x1_security_15 + 7.10019 x1_security_29
  <= 1000000
-constr(42):  0.59760 w_security_10 + 0.59760 w_security_7 + 0.59760 w_security_11 + 0.59760 w_security_26 + 0.59760 w_security_21 + 0.59760 w_security_28 + 0.59760 w_security_19 + 0.59760 w_security_14 + 0.59760 w_security_15 + 0.59760 w_security_29
+constr(42):  12 w_security_10 + 12 w_security_7 + 12 w_security_11 + 12 w_security_26 + 12 w_security_21 + 12 w_security_28 + 12 w_security_19 + 12 w_security_14 + 12 w_security_15 + 12 w_security_29
  + 0.01000 b_security_10 + 0.01000 b_security_7 + 0.01000 b_security_11 + 0.01000 b_security_26 + 0.01000 b_security_21 + 0.01000 b_security_28 + 0.01000 b_security_19 + 0.01000 b_security_14 + 0.01000 b_security_15 + 0.01000 b_security_29
  + 0.01000 s_security_10 + 0.01000 s_security_7 + 0.01000 s_security_11 + 0.01000 s_security_26 + 0.01000 s_security_21 + 0.01000 s_security_28 + 0.01000 s_security_19 + 0.01000 s_security_14 + 0.01000 s_security_15 + 0.01000 s_security_29
  <= 100000

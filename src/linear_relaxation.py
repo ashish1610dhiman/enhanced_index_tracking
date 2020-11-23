@@ -58,8 +58,9 @@ def deviation(price,returns,C,X_1,t):
 
 
 """ Read CMD line arguments """
-print ("Running Linear Relaxation of EIT")
-if len(sys.argv)!=8:
+print ("Running Linear Relaxation of EIT ...")
+#print ("len sys.argv in linear relax={}".format(len(sys.argv)))
+if len(sys.argv)!=11:
     print("Error, Wrong no. of arguments={}, using default arguments".format(len(sys.argv)))
     file=1
     T=200
@@ -67,6 +68,9 @@ if len(sys.argv)!=8:
     k=12
     pho=0.4
     nuh=0.65
+    C = 1000000
+    lamda = 1 / (100 * C)
+    f=12
     output="./experiment_1/"
     #sys.exit(1)
 else:
@@ -77,7 +81,10 @@ else:
     k=int(sys.argv[4])
     pho=float(sys.argv[5])
     nuh = float(sys.argv[6])
-    output="./"+str(sys.argv[7])+"/"
+    C=float(sys.argv[7])
+    lamda=float(sys.argv[8])
+    f=float(sys.argv[9])
+    output="./"+str(sys.argv[10])+"/"
 
 if not os.path.exists(output):
     os.makedirs(output)
@@ -90,15 +97,15 @@ returns.drop([0],axis=0,inplace=True)
 
 
 """ Define Parameters of the model and create input vars """
-C=1000000 #Capital available
+#C=1000000 #Capital available
 tau=0 #Additional Cash Fund
-lamda=1/(100*C) # lower_bound for capital invested in jth stock
+#lamda=1/(100*C) # lower_bound for capital invested in jth stock
 #nuh=0.65  # upper_bound
 #k= 12 #Cardinality Constraint
 #pho=0.4 #Transaction Cost Proportion
 c_b=0.01 #Constant for buying cost
 c_s=0.01 #Constant for selling cost
-f=min(price.min())/3 #Fixed Txn Cost
+#f=min(price.min())/3 #Fixed Txn Cost
 #xii=0.5
 
 """ Create the input variables """

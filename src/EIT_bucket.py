@@ -34,7 +34,7 @@ def deviation(price,returns,C,X_1,t):
         z.append(q_jt*X_1[j])
     return (theta*price["index"][t]-xsum(z))
 
-def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,xii,k,pho,output):
+def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,xii,k,pho,f,output):
     #from EIT_kernel import excess_return
     #from EIT_kernel import deviation
     """ Read the input index file """
@@ -48,7 +48,7 @@ def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,xii,k,ph
     #pho=0.4 #Transaction Cost Proportion
     c_b=0.01 #Constant for buying cost
     c_s=0.01 #Constant for selling cost
-    f=min(price.min())/3 #Fixed Txn Cost
+    #f=min(price.min())/3 #Fixed Txn Cost
     """ Create the input variables """
     n=price.shape[1]-1
     X_0=np.zeros((n,1)) #Gives units of jth stock in original portfolio

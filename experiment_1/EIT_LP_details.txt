@@ -1,0 +1,3 @@
+LP(EIT) status=0
+Objective=1302.874
+xii=0.8,k=12,lambda=1e-08,nuh=0.65

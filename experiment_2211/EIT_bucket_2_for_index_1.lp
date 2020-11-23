@@ -56,8 +56,8 @@ constr(48):  y_security_10 + y_security_7 + y_security_11 + y_security_26 + y_se
  + y_security_23 + y_security_8 <= 14
 constr(49):  15.26541 x1_security_10 + 36.29973 x1_security_7 + 24.49566 x1_security_11 + 122.92207 x1_security_26 + 83.60476 x1_security_21 + 63.19171 x1_security_28 + 10.65029 x1_security_19 + 20.94557 x1_security_14 + 207.68060 x1_security_15 + 7.10019 x1_security_29
  + 48.90257 x1_security_23 + 13.66787 x1_security_8 <= 1000000
-constr(50):  0.59760 w_security_10 + 0.59760 w_security_7 + 0.59760 w_security_11 + 0.59760 w_security_26 + 0.59760 w_security_21 + 0.59760 w_security_28 + 0.59760 w_security_19 + 0.59760 w_security_14 + 0.59760 w_security_15 + 0.59760 w_security_29
- + 0.59760 w_security_23 + 0.59760 w_security_8 + 0.01000 b_security_10 + 0.01000 b_security_7 + 0.01000 b_security_11 + 0.01000 b_security_26 + 0.01000 b_security_21 + 0.01000 b_security_28 + 0.01000 b_security_19 + 0.01000 b_security_14
+constr(50):  12 w_security_10 + 12 w_security_7 + 12 w_security_11 + 12 w_security_26 + 12 w_security_21 + 12 w_security_28 + 12 w_security_19 + 12 w_security_14 + 12 w_security_15 + 12 w_security_29
+ + 12 w_security_23 + 12 w_security_8 + 0.01000 b_security_10 + 0.01000 b_security_7 + 0.01000 b_security_11 + 0.01000 b_security_26 + 0.01000 b_security_21 + 0.01000 b_security_28 + 0.01000 b_security_19 + 0.01000 b_security_14
  + 0.01000 b_security_15 + 0.01000 b_security_29 + 0.01000 b_security_23 + 0.01000 b_security_8 + 0.01000 s_security_10 + 0.01000 s_security_7 + 0.01000 s_security_11 + 0.01000 s_security_26 + 0.01000 s_security_21 + 0.01000 s_security_28
  + 0.01000 s_security_19 + 0.01000 s_security_14 + 0.01000 s_security_15 + 0.01000 s_security_29 + 0.01000 s_security_23 + 0.01000 s_security_8 <= 100000
 constr(51):  1.81055 x1_security_10 + 16.41919 x1_security_7 + 14.99915 x1_security_11 + 44.78446 x1_security_26 + 37.27601 x1_security_21 + 41.41187 x1_security_28 + 5.76891 x1_security_19 + 20.94557 x1_security_14 + 75.43954 x1_security_15 + 2.34306 x1_security_29

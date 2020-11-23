@@ -4,14 +4,14 @@ Minimize
 OBJROW: -0.18885 x1_security_10 -0.19016 x1_security_7 -0.07954 x1_security_11 -0.74155 x1_security_26 -0.41760 x1_security_21 -0.18022 x1_security_28 -0.04984 x1_security_19 -0.01418 x1_security_14 -1.19973 x1_security_15 -0.05635 x1_security_29
  -0.40579 x1_security_23 -0.03538 x1_security_8 -0.01630 x1_security_17 -0.11866 x1_security_25 -0.11886 x1_security_31 -0.28304 x1_security_24 -0.65084 x1_security_27
 Subject To
-constr(0):  -15.26541 x1_security_10 + 0.00100 y_security_10 <= -0
-constr(1):  15.26541 x1_security_10 -800000 y_security_10 <= -0
-constr(2):  -15.26541 x1_security_10 + b_security_10 - s_security_10 = -608203.67677
-constr(3):  -800000 w_security_10 + b_security_10 + s_security_10 <= -0
-constr(4):  y_security_7 - w_security_7 = -0
+constr(0):  y_security_10 - w_security_10 = -0
+constr(1):  -15.26541 x1_security_10 + 0.00100 y_security_10 <= -0
+constr(2):  15.26541 x1_security_10 -800000 y_security_10 <= -0
+constr(3):  -15.26541 x1_security_10 + b_security_10 - s_security_10 = -0
+constr(4):  -800000 w_security_10 + b_security_10 + s_security_10 <= -0
 constr(5):  -36.29973 x1_security_7 + 0.00100 y_security_7 <= -0
 constr(6):  36.29973 x1_security_7 -800000 y_security_7 <= -0
-constr(7):  -36.29973 x1_security_7 + b_security_7 - s_security_7 = -0
+constr(7):  -36.29973 x1_security_7 + b_security_7 - s_security_7 = -157915.05791
 constr(8):  -800000 w_security_7 + b_security_7 + s_security_7 <= -0
 constr(9):  -24.49566 x1_security_11 + 0.00100 y_security_11 <= -0
 constr(10):  24.49566 x1_security_11 -800000 y_security_11 <= -0
@@ -25,18 +25,18 @@ constr(17):  -83.60476 x1_security_21 + 0.00100 y_security_21 <= -0
 constr(18):  83.60476 x1_security_21 -800000 y_security_21 <= -0
 constr(19):  -83.60476 x1_security_21 + b_security_21 - s_security_21 = -153620.35226
 constr(20):  -800000 w_security_21 + b_security_21 + s_security_21 <= -0
-constr(21):  -63.19171 x1_security_28 + 0.00100 y_security_28 <= -0
-constr(22):  63.19171 x1_security_28 -800000 y_security_28 <= -0
-constr(23):  -63.19171 x1_security_28 + b_security_28 - s_security_28 = -109747.82663
-constr(24):  -800000 w_security_28 + b_security_28 + s_security_28 <= -0
-constr(25):  -10.65029 x1_security_19 + 0.00100 y_security_19 <= -0
-constr(26):  10.65029 x1_security_19 -800000 y_security_19 <= -0
-constr(27):  -10.65029 x1_security_19 + b_security_19 - s_security_19 = -129870.12997
-constr(28):  -800000 w_security_19 + b_security_19 + s_security_19 <= -0
-constr(29):  y_security_14 - w_security_14 = -0
+constr(21):  y_security_28 - w_security_28 = -0
+constr(22):  -63.19171 x1_security_28 + 0.00100 y_security_28 <= -0
+constr(23):  63.19171 x1_security_28 -800000 y_security_28 <= -0
+constr(24):  -63.19171 x1_security_28 + b_security_28 - s_security_28 = -0
+constr(25):  -800000 w_security_28 + b_security_28 + s_security_28 <= -0
+constr(26):  -10.65029 x1_security_19 + 0.00100 y_security_19 <= -0
+constr(27):  10.65029 x1_security_19 -800000 y_security_19 <= -0
+constr(28):  -10.65029 x1_security_19 + b_security_19 - s_security_19 = -129870.12997
+constr(29):  -800000 w_security_19 + b_security_19 + s_security_19 <= -0
 constr(30):  -20.94557 x1_security_14 + 0.00100 y_security_14 <= -0
 constr(31):  20.94557 x1_security_14 -800000 y_security_14 <= -0
-constr(32):  -20.94557 x1_security_14 + b_security_14 - s_security_14 = -0
+constr(32):  -20.94557 x1_security_14 + b_security_14 - s_security_14 = -70238.09524
 constr(33):  -800000 w_security_14 + b_security_14 + s_security_14 <= -0
 constr(34):  -207.68060 x1_security_15 + 0.00100 y_security_15 <= -0
 constr(35):  207.68060 x1_security_15 -800000 y_security_15 <= -0
@@ -50,14 +50,14 @@ constr(42):  -48.90257 x1_security_23 + 0.00100 y_security_23 <= -0
 constr(43):  48.90257 x1_security_23 -800000 y_security_23 <= -0
 constr(44):  -48.90257 x1_security_23 + b_security_23 - s_security_23 = -289390.75628
 constr(45):  -800000 w_security_23 + b_security_23 + s_security_23 <= -0
-constr(46):  -13.66787 x1_security_8 + 0.00100 y_security_8 <= -0
-constr(47):  13.66787 x1_security_8 -800000 y_security_8 <= -0
-constr(48):  -13.66787 x1_security_8 + b_security_8 - s_security_8 = -98039.21570
-constr(49):  -800000 w_security_8 + b_security_8 + s_security_8 <= -0
-constr(50):  y_security_17 - w_security_17 = -0
+constr(46):  y_security_8 - w_security_8 = -0
+constr(47):  -13.66787 x1_security_8 + 0.00100 y_security_8 <= -0
+constr(48):  13.66787 x1_security_8 -800000 y_security_8 <= -0
+constr(49):  -13.66787 x1_security_8 + b_security_8 - s_security_8 = -0
+constr(50):  -800000 w_security_8 + b_security_8 + s_security_8 <= -0
 constr(51):  -9.21250 x1_security_17 + 0.00100 y_security_17 <= -0
 constr(52):  9.21250 x1_security_17 -800000 y_security_17 <= -0
-constr(53):  -9.21250 x1_security_17 + b_security_17 - s_security_17 = -0
+constr(53):  -9.21250 x1_security_17 + b_security_17 - s_security_17 = -80941.98380
 constr(54):  -800000 w_security_17 + b_security_17 + s_security_17 <= -0
 constr(55):  -35.50096 x1_security_25 + 0.00100 y_security_25 <= -0
 constr(56):  35.50096 x1_security_25 -800000 y_security_25 <= -0
@@ -79,8 +79,8 @@ constr(71):  y_security_10 + y_security_7 + y_security_11 + y_security_26 + y_se
  + y_security_23 + y_security_8 + y_security_17 + y_security_25 + y_security_31 + y_security_24 + y_security_27 <= 14
 constr(72):  15.26541 x1_security_10 + 36.29973 x1_security_7 + 24.49566 x1_security_11 + 122.92207 x1_security_26 + 83.60476 x1_security_21 + 63.19171 x1_security_28 + 10.65029 x1_security_19 + 20.94557 x1_security_14 + 207.68060 x1_security_15 + 7.10019 x1_security_29
  + 48.90257 x1_security_23 + 13.66787 x1_security_8 + 9.21250 x1_security_17 + 35.50096 x1_security_25 + 23.51938 x1_security_31 + 46.95002 x1_security_24 + 112.27178 x1_security_27 <= 1000000
-constr(73):  0.59760 w_security_10 + 0.59760 w_security_7 + 0.59760 w_security_11 + 0.59760 w_security_26 + 0.59760 w_security_21 + 0.59760 w_security_28 + 0.59760 w_security_19 + 0.59760 w_security_14 + 0.59760 w_security_15 + 0.59760 w_security_29
- + 0.59760 w_security_23 + 0.59760 w_security_8 + 0.59760 w_security_17 + 0.59760 w_security_25 + 0.59760 w_security_31 + 0.59760 w_security_24 + 0.59760 w_security_27 + 0.01000 b_security_10 + 0.01000 b_security_7 + 0.01000 b_security_11
+constr(73):  12 w_security_10 + 12 w_security_7 + 12 w_security_11 + 12 w_security_26 + 12 w_security_21 + 12 w_security_28 + 12 w_security_19 + 12 w_security_14 + 12 w_security_15 + 12 w_security_29
+ + 12 w_security_23 + 12 w_security_8 + 12 w_security_17 + 12 w_security_25 + 12 w_security_31 + 12 w_security_24 + 12 w_security_27 + 0.01000 b_security_10 + 0.01000 b_security_7 + 0.01000 b_security_11
  + 0.01000 b_security_26 + 0.01000 b_security_21 + 0.01000 b_security_28 + 0.01000 b_security_19 + 0.01000 b_security_14 + 0.01000 b_security_15 + 0.01000 b_security_29 + 0.01000 b_security_23 + 0.01000 b_security_8 + 0.01000 b_security_17
  + 0.01000 b_security_25 + 0.01000 b_security_31 + 0.01000 b_security_24 + 0.01000 b_security_27 + 0.01000 s_security_10 + 0.01000 s_security_7 + 0.01000 s_security_11 + 0.01000 s_security_26 + 0.01000 s_security_21 + 0.01000 s_security_28
  + 0.01000 s_security_19 + 0.01000 s_security_14 + 0.01000 s_security_15 + 0.01000 s_security_29 + 0.01000 s_security_23 + 0.01000 s_security_8 + 0.01000 s_security_17 + 0.01000 s_security_25 + 0.01000 s_security_31 + 0.01000 s_security_24
