@@ -184,10 +184,10 @@ class TestEitBasic:
 
 
     def run_experiment(self,verbose=True):
-        failure, z_lp, result_lp = self.step_1(verose=verbose)
+        failure, z_lp, result_lp = self.step_1(verbose=verbose)
         kernel, buckets, L, Nb = self.step_2a(failure, z_lp, result_lp,verbose=verbose)
-        z, failure = self.step_2b(kernel, buckets, verbose=verbose)
-        execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,verbose=verbose)
+        z, failure,execution_result = self.step_2b(kernel, buckets, verbose=verbose)
+        execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,execution_result, verbose=verbose)
         if verbose:
             self.print_result()
         return (execution_result)
