@@ -93,13 +93,13 @@ class TestEitBasic:
         execution_result = execution_result.append(temp, ignore_index=True)
         result_kernel = src.EIT_kernel.pd.read_csv(self.output + "/EIT_kernel_result_index_{}.csv".format(self.file))
         src.EIT_kernel.plot_results(kernel, result_kernel, self.file, self.T, self.output);
-        return (z, failure)
+        return (z, failure,execution_result)
         if verbose:
             print("+----------------------------------------------------+")
             print("    Step 2b complete in {:.2f}s".format(time.time() - s))
             print("+----------------------------------------------------+")
 
-    def step_3(self,kernel, L, z, Nb, buckets, failure, verbose=True):
+    def step_3(self,kernel, L, z, Nb, buckets, failure,execution_result, verbose=True):
         if verbose:
             print("+----------------------------------------------------+")
             print("    Step 3: Execution Phase of Kernel Search")
