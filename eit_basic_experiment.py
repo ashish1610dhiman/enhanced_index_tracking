@@ -10,9 +10,9 @@ class TestEitBasic:
     Output: Result of EIT_basic model
     """
 
-    def __init__(self, *kwargs):
-        for param_name, param_value in kwargs.items():
-            self.param_name = param_value
+    def __init__(self, **kwargs):
+        #print (kwargs)
+        self.__dict__.update({param_name: param_name for  param_name, param_value in kwargs.items()})
         self.param_dict = kwargs
         self.best_objective_eit = None
         self.objective_linear = None
