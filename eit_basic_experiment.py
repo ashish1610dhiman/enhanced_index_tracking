@@ -35,9 +35,13 @@ class TestEitBasic:
         text_file = open(self.output + "/EIT_LP_details.txt")
         lines = text_file.readlines()
         failure = bool(int(lines[0][-2]))
-        z_lp = float(lines[1].split("=")[-1][:-2])
+        if not failure:
+            z_lp = float(lines[1].split("=")[-1][:-2])
+            result_lp = pd.read_csv(self.output + "/result_index_{}.csv".format(self.file))
+        else:
+            z_lp = None
+            result_lp = None
         self.objective_linear = z_lp
-        result_lp = pd.read_csv(self.output + "/result_index_{}.csv".format(self.file))
         if verbose == True:
             print("+----------------------------------------------------+")
             print("    Step 1 complete in {:.2f}s".format(time.time() - s))
@@ -185,9 +189,12 @@ class TestEitBasic:
 
     def run_experiment(self,verbose=True):
         failure, z_lp, result_lp = self.step_1(verbose=verbose)
-        kernel, buckets, L, Nb = self.step_2a(failure, z_lp, result_lp,verbose=verbose)
-        z, failure,execution_result = self.step_2b(kernel, buckets, verbose=verbose)
-        execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,execution_result, verbose=verbose)
+        if  not failure:
+            kernel, buckets, L, Nb = self.step_2a(failure, z_lp, result_lp,verbose=verbose)
+            z, failure,execution_result = self.step_2b(kernel, buckets, verbose=verbose)
+            execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,execution_result, verbose=verbose)
+        else:
+            execution_result=None
         if verbose:
             self.print_result()
         return (execution_result)

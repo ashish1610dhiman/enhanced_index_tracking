@@ -197,6 +197,6 @@ def plot_results(kernel,bucket,bucket_no,result,file,T,output):
     plt.fill_between(x=ind_2[:,0], y1=port_2[:,1]+3*np.std(portfolio_return[T:]),
           y2=port_2[:,1]-3*np.std(portfolio_return),
           color=(255/255,87/255,86/255,0.2))
-    plt.title("EIT_Dual_kernel_bucket_{} performance for index={}\n".format(bucket_no,file))
-    plt.savefig(output+"/EIT_Dual_kernel_bucket_{} for index_{}.jpg".format(bucket_no,file),dpi=250)
+    plt.title("EIT_kernel_bucket_{} performance for index={}\n".format(bucket_no,file))
+    plt.savefig(output+"/EIT_kernel_bucket_{} for index_{}.jpg".format(bucket_no,file),dpi=250)
     plt.close()

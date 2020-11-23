@@ -199,17 +199,17 @@ for stock in stocks:
     temp["s"]=[s[stock].x]
     result=result.append(temp,ignore_index=True)
 
-result.to_csv(output+"result_index_{}.csv".format(file),index=False)
+#result.to_csv(output+"result_index_{}.csv".format(file),index=False)
 file1 = open(output+"EIT_LP_details.txt","w+")
-file1.writelines("LP(EIT) status={}\nObjective={}\n".format(str(LP.status.value),str(round(LP.objective_value,3))))
+file1.writelines("LP(EIT) status={}\nObjective={}\n".format(str(LP.status.value),LP.objective_value))
 file1.writelines("xii={},k={},lambda={},nuh={}".format(xii,k,lamda,nuh))
 file1.close()
 
 #Write LP model to a file
-LP.write(output+"LP_EIT_index_{}.lp".format(file))
+LP.write(output+"/LP_EIT_index_{}.lp".format(file))
 
 if LP.status.value!=0:
-    sys.exit(1)
+    sys.exit(0)
 
 #Calulation
 q_T=price.iloc[T][1:]
@@ -218,7 +218,7 @@ w=(w/np.sum(w))
 result["weights"]=w
 #=q_T.reset_index()
 result["q_T"]=q_T.values
-result.to_csv("result_index_{}.csv".format(file),index=False)
+result.to_csv(output+"/result_index_{}.csv".format(file),index=False)
 #Initialisation
 index=[1]
 tracking=[1]
