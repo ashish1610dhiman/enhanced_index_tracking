@@ -120,7 +120,7 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho,f,output):
         result=result.append(temp,ignore_index=True)
     result.to_csv(output+"/EIT_kernel_result_index_{}.csv".format(file),index=False)
     LP.write(output+"/EIT_kernel_for_index_{}.lp".format(file))
-    return(status,round(LP.objective_value,3))
+    return(status,LP.objective_value)
 
 
    
