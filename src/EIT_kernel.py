@@ -105,7 +105,7 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho,f,output):
     LP.emphasis=1
     status=LP.optimize()
     print("***************************************************\n")
-    print("Optimisation Status={},Objective Value={}".format(str(status.value),str(round(LP.objective_value,3))))
+    print("Optimisation Status={},Objective Value={}".format(str(status.value),LP.objective_value))
     print("OPTIMAL(0), ERROR(-1), INFEASIBLE(1), UNBOUNDED(2)")
     result=pd.DataFrame()
     for stock in stocks:
