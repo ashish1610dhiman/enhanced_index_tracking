@@ -2,3 +2,4 @@
 __pycache__/
 *.py[cod]
 /eit_basic_experiments/*
+/eit_basic_experiments

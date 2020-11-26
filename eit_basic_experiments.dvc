@@ -1,0 +1,5 @@
+outs:
+- md5: 6b96107e82e8d99e36e623a394faffd5.dir
+  size: 40718246
+  nfiles: 303
+  path: eit_basic_experiments
