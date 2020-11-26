@@ -9,3 +9,7 @@
 ### Nov 23
 **For comparing performance b/w models, we can give index as combination of some weights, therefore confirming that index can be tracked, and then judge model's performance against this**
 * Creating class to test experiments
+
+### Nov 26
+* Added DVC for version control of experiment data
+* **Experiment 2**: Try to replicate table for paper
