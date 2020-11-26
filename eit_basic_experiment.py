@@ -20,15 +20,16 @@ class TestEitBasic:
     def print_params(self):
         print(self.param_dict)
 
-    def step_1(self, verbose=True):
+    def step_1(self, from_root=True,verbose=True):
         if verbose == True:
             print("+----------------------------------------------------+")
             print("    Step 1: Solving Linear Relaxation of EIT-Basic")
             print("+----------------------------------------------------+")
         s = time.time()
         # print ("len sys.argv in experiment={}".format(len(sys.argv)))
-        out = os.system("python ./src/linear_relaxation.py {} {} {} {} {} {} {} {} {} {}". \
-                        format(self.file, self.T, self.xii, self.k, self.pho, self.nuh, self.C,\
+        path_root="." if from_root else ".."
+        out = os.system("python {}/src/linear_relaxation.py {} {} {} {} {} {} {} {} {} {}". \
+                        format(path_root,self.file, self.T, self.xii, self.k, self.pho, self.nuh, self.C,\
                                self.lamda, self.f, self.output))
         #print (out)
         assert out == 0, "Error in linear relaxation"

@@ -89,8 +89,17 @@ else:
 if not os.path.exists(output):
     os.makedirs(output)
 
+print(os.getcwd())
+if os.getcwd().split("/")[-1]=="eit_paper":
+    file_path="./input/index-weekly-data/index_{}.csv"
+else:
+    n_dirs_up = os.getcwd().split("/")
+    n_dirs_up.reverse()
+    n_dirs_up=n_dirs_up.index("eit_paper")
+    root_path="/".join([".."]*n_dirs_up)
+    file_path = root_path+"/input/index-weekly-data/index_{}.csv"
 """ Read the input index file """
-price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
+price=pd.read_csv(file_path.format(file))
 price=price[0:T+1]
 returns=(price-price.shift(1))/price.shift(1)
 returns.drop([0],axis=0,inplace=True)
