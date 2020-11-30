@@ -233,7 +233,7 @@ index=[1]
 tracking=[1]
 portfolio_return=[]
 #Read full 290 weeks data
-price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
+price=pd.read_csv(file_path.format(file))
 returns=(price-price.shift(1))/price.shift(1)
 returns.drop([0],axis=0,inplace=True)
 #Looping

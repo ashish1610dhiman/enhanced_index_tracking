@@ -49,7 +49,7 @@ class TestEitBasic:
             print("+----------------------------------------------------+")
         return (failure, z_lp, result_lp)
 
-    def step_2a(self, failure, z_lp, result_lp, verbose=True):
+    def step_2a(self, failure, z_lp, result_lp,from_root=True, verbose=True):
         if verbose:
             print("+----------------------------------------------------+")
             print("    Step 2a: Sort Securities and create buckets")
@@ -57,7 +57,7 @@ class TestEitBasic:
         s = time.time()
         import src.sort_and_buckets
         # Create dummy problem using PULP
-        LP, q_T = src.sort_and_buckets.dummy_problem(self.T, self.C, self.file)
+        LP, q_T = src.sort_and_buckets.dummy_problem(self.T, self.C, self.file,from_root)
         q_T.drop("index", inplace=True)
         objective = LP.objective
 
@@ -73,7 +73,7 @@ class TestEitBasic:
             print("    Step 2a complete in {:.2f}s".format(time.time() - s))
             print("+----------------------------------------------------+")
 
-    def step_2b(self, kernel, buckets, verbose=True):
+    def step_2b(self, kernel, buckets,from_root, verbose=True):
         if verbose:
             print("+----------------------------------------------------+")
             print("     Step 2b: Solve EIT(kernel) and get lower-bound")
@@ -82,7 +82,7 @@ class TestEitBasic:
         import src.EIT_kernel
         try:
             status, z = src.EIT_kernel.EIT_kernel(kernel, self.C, self.T, self.file, self.lamda, \
-                                                  self.nuh, self.xii, self.k, self.pho, self.f, self.output)
+                                                  self.nuh, self.xii, self.k, self.pho, self.f, self.output,from_root)
             failure = bool(status.value > 0)
         except:
             print("ERROR in EIT Kernel")
@@ -97,14 +97,14 @@ class TestEitBasic:
         temp["z_value"] = [z]
         execution_result = execution_result.append(temp, ignore_index=True)
         result_kernel = src.EIT_kernel.pd.read_csv(self.output + "/EIT_kernel_result_index_{}.csv".format(self.file))
-        src.EIT_kernel.plot_results(kernel, result_kernel, self.file, self.T, self.output);
+        src.EIT_kernel.plot_results(kernel, result_kernel, self.file, self.T, self.output,from_root);
         return (z, failure,execution_result)
         if verbose:
             print("+----------------------------------------------------+")
             print("    Step 2b complete in {:.2f}s".format(time.time() - s))
             print("+----------------------------------------------------+")
 
-    def step_3(self,kernel, L, z, Nb, buckets, failure,execution_result, verbose=True):
+    def step_3(self, kernel, L, z, Nb, buckets, failure, execution_result, verbose=True, from_root=True):
         if verbose:
             print("+----------------------------------------------------+")
             print("    Step 3: Execution Phase of Kernel Search")
@@ -130,7 +130,7 @@ class TestEitBasic:
             try:
                 status, z, selected, EIT_model = src.EIT_bucket.EIT_bucket(kernel, bucket, i, failure, z_low, \
                                                                            self.C, self.T, self.file, self.lamda, self.nuh,
-                                                                           self.xii, self.k, self.pho, self.f, self.output)
+                                                                           self.xii, self.k, self.pho, self.f, self.output,from_root)
                 eit_model_record.append(EIT_model)
             except:
                 print("Error in this bucket")
@@ -153,7 +153,8 @@ class TestEitBasic:
                     p_dict[stock] = 0
                 # Update p_dict
                 result_bucket = pd.read_csv(self.output + "/EIT_bucket_{}_result_index_{}.csv".format(i, self.file))
-                src.EIT_bucket.plot_results(kernel_copy, bucket, i, result_bucket, self.file, self.T, self.output)
+                src.EIT_bucket.plot_results(kernel_copy, bucket, i, result_bucket, self.file,\
+                                            self.T, self.output,from_root)
                 result_bucket.index = result_bucket["security"]
                 result_bucket.drop(["security"], axis=1, inplace=True)
                 for stock in kernel:
@@ -191,12 +192,13 @@ class TestEitBasic:
             print ("either of 2 None")
 
 
-    def run_experiment(self,verbose=True):
-        failure, z_lp, result_lp = self.step_1(verbose=verbose)
-        if  not failure:
-            kernel, buckets, L, Nb = self.step_2a(failure, z_lp, result_lp,verbose=verbose)
-            z, failure,execution_result = self.step_2b(kernel, buckets, verbose=verbose)
-            execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,execution_result, verbose=verbose)
+    def run_experiment(self,from_root=True,verbose=True):
+        failure, z_lp, result_lp = self.step_1(from_root=from_root,verbose=verbose)
+        if not failure:
+            kernel, buckets, L, Nb = self.step_2a(failure, z_lp, result_lp,from_root=from_root,verbose=verbose)
+            z, failure,execution_result = self.step_2b(kernel, buckets, from_root=from_root, verbose=verbose)
+            execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,execution_result,\
+                                         from_root=from_root,verbose=verbose)
         else:
             execution_result=None
         if verbose:

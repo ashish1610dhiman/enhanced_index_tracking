@@ -64,10 +64,18 @@ def create_buckets(L,m,lbuck):
         i=i+1
     return buckets
 
-def dummy_problem(T,C,file):
+def dummy_problem(T,C,file,from_root):
     #from src.sort_and_buckets import excess_return
     #import pandas as pd
-    price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
+    if from_root:
+        file_path = "./input/index-weekly-data/index_{}.csv"
+    else:
+        n_dirs_up = os.getcwd().split("/")
+        n_dirs_up.reverse()
+        n_dirs_up = n_dirs_up.index("eit_paper")
+        root_path = "/".join([".."] * n_dirs_up)
+        file_path = root_path + "/input/index-weekly-data/index_{}.csv"
+    price=pd.read_csv(file_path.format(file))
     price=price[0:T+1]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)

@@ -9,6 +9,7 @@ from mip import Model, xsum, maximize
 import pandas as pd
 import numpy as np
 import random
+import os
 
 """ Define the functions for Excess Return and Deviation Calculation """
 def excess_return(returns,price,X_1,C):
@@ -34,11 +35,19 @@ def deviation(price,returns,C,X_1,t):
         z.append(q_jt*X_1[j])
     return (theta*price["index"][t]-xsum(z))
 
-def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,xii,k,pho,f,output):
+def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,xii,k,pho,f,output,from_root=True):
     #from EIT_kernel import excess_return
     #from EIT_kernel import deviation
     """ Read the input index file """
-    price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
+    if from_root:
+        file_path = "./input/index-weekly-data/index_{}.csv"
+    else:
+        n_dirs_up = os.getcwd().split("/")
+        n_dirs_up.reverse()
+        n_dirs_up = n_dirs_up.index("eit_paper")
+        root_path = "/".join([".."] * n_dirs_up)
+        file_path = root_path + "/input/index-weekly-data/index_{}.csv"
+    price=pd.read_csv(file_path.format(file))
     kernel_i=kernel + bucket
     price=price[["index"]+kernel_i][0:T+1]
     returns=(price-price.shift(1))/price.shift(1)
@@ -142,12 +151,20 @@ def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,xii,k,ph
 
 
    
-def plot_results(kernel,bucket,bucket_no,result,file,T,output):
+def plot_results(kernel,bucket,bucket_no,result,file,T,output,from_root=True):
     import pandas as pd
     import numpy as np
     from matplotlib.collections import LineCollection
     import matplotlib.pyplot as plt
-    price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
+    if from_root:
+        file_path = "./input/index-weekly-data/index_{}.csv"
+    else:
+        n_dirs_up = os.getcwd().split("/")
+        n_dirs_up.reverse()
+        n_dirs_up = n_dirs_up.index("eit_paper")
+        root_path = "/".join([".."] * n_dirs_up)
+        file_path = root_path + "/input/index-weekly-data/index_{}.csv"
+    price = pd.read_csv(file_path.format(file))
     price=price[["index"]+kernel+bucket][0:201]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)
@@ -159,7 +176,7 @@ def plot_results(kernel,bucket,bucket_no,result,file,T,output):
     tracking=[1]
     portfolio_return=[]
     #Read full 290 weeks data
-    price=pd.read_csv("./input/index-weekly-data/index_{}.csv".format(file))
+    price=pd.read_csv(file_path.format(file))
     price=price[["index"]+kernel+bucket]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)
