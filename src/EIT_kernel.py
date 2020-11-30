@@ -25,6 +25,7 @@ def excess_return(returns,price,X_1,C):
         z.append(xsum(portfolio_return)-benchmark_return)
     return (xsum(z))
 
+
 def deviation(price,returns,C,X_1,t):
     #import mip.model as mip
     theta=C/price["index"].iloc[-1]
@@ -33,6 +34,27 @@ def deviation(price,returns,C,X_1,t):
         q_jt=price[j][t]
         z.append(q_jt*X_1[j])
     return (theta*price["index"][t]-xsum(z))
+
+def performance(price,result,C,T,theta):
+    in_price = price[0:T + 1]
+    out_price = price[T + 1:]
+    in_returns = (in_price - in_price.shift(1)) / in_price.shift(1)
+    in_returns.drop([0], axis=0, inplace=True)
+    out_returns = (out_price - out_price.shift(1)) / out_price.shift(1)
+    out_returns.drop([0], axis=0, inplace=True)
+    result.index = result.security
+    #Get In sample and out of sample Excess Return
+    in_q_T=in_price.iloc[-1]
+    out_q_T=out_price.iloc[-1]
+    y_in=result["X_1"]*in_returns*in_q_T
+    y_out = result["X_1"] * out_returns * out_q_T
+    in_excess_return=y_in.mean().sum()-(in_returns["index"]*C).mean()
+    out_excess_return =y_out.mean().sum()-(out_returns["index"] * C).mean()
+    z_in=result["X_1"]*in_price
+    z_out = result["X_1"] * out_price
+    in_tr_err=theta * in_price["index"].sum() - z_in.sum().sum()
+    out_tr_err = theta * out_price["index"].sum() - z_out.sum().sum()
+    return (in_excess_return,in_tr_err,out_excess_return,out_tr_err)
 
 def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho,f,output,from_root=True):
     #from EIT_kernel import excess_return
@@ -129,7 +151,8 @@ def EIT_kernel(kernel,C,T,file,lamda,nuh,xii,k,pho,f,output,from_root=True):
         result=result.append(temp,ignore_index=True)
     result.to_csv(output+"/EIT_kernel_result_index_{}.csv".format(file),index=False)
     LP.write(output+"/EIT_kernel_for_index_{}.lp".format(file))
-    return(status,LP.objective_value)
+    in_excess_return,in_tr_err,out_excess_return,out_tr_err=performance(pd.read_csv(file_path.format(file)),result,C,T,theta)
+    return(status,LP.objective_value,in_excess_return,in_tr_err,out_excess_return,out_tr_err)
 
 
    

@@ -81,7 +81,7 @@ class TestEitBasic:
         s = time.time()
         import src.EIT_kernel
         try:
-            status, z = src.EIT_kernel.EIT_kernel(kernel, self.C, self.T, self.file, self.lamda, \
+            status, z,in_excess_return, in_tr_err, out_excess_return, out_tr_err = src.EIT_kernel.EIT_kernel(kernel, self.C, self.T, self.file, self.lamda, \
                                                   self.nuh, self.xii, self.k, self.pho, self.f, self.output,from_root)
             failure = bool(status.value > 0)
         except:
@@ -95,6 +95,10 @@ class TestEitBasic:
         temp["kernel_size"] = [len(kernel)]
         temp["problem_status"] = [status]
         temp["z_value"] = [z]
+        temp["in_excess_return"]=[in_excess_return]
+        temp["in_tr_err"]=[in_tr_err]
+        temp["out_excess_return"]=[out_excess_return]
+        temp["out_tr_err"]=[out_tr_err]
         execution_result = execution_result.append(temp, ignore_index=True)
         result_kernel = src.EIT_kernel.pd.read_csv(self.output + "/EIT_kernel_result_index_{}.csv".format(self.file))
         src.EIT_kernel.plot_results(kernel, result_kernel, self.file, self.T, self.output,from_root);
@@ -128,9 +132,11 @@ class TestEitBasic:
             print("\n\nFor bucket={}".format(str(i)))
             # Solve EIT(K+Bi)
             try:
-                status, z, selected, EIT_model = src.EIT_bucket.EIT_bucket(kernel, bucket, i, failure, z_low, \
-                                                                           self.C, self.T, self.file, self.lamda, self.nuh,
-                                                                           self.xii, self.k, self.pho, self.f, self.output,from_root)
+                status, z, selected, EIT_model, in_excess_return,\
+                in_tr_err, out_excess_return, out_tr_err = \
+                    src.EIT_bucket.EIT_bucket(kernel, bucket, i, failure, z_low,self.C, self.T, self.file,\
+                                              self.lamda, self.nuh, self.xii, self.k, self.pho, self.f,\
+                                              self.output,from_root)
                 eit_model_record.append(EIT_model)
             except:
                 print("Error in this bucket")
@@ -175,6 +181,10 @@ class TestEitBasic:
             temp["kernel_size"] = [len(kernel)]
             temp["problem_status"] = [status]
             temp["z_value"] = [z]
+            temp["in_excess_return"] = [in_excess_return]
+            temp["in_tr_err"] = [in_tr_err]
+            temp["out_excess_return"] = [out_excess_return]
+            temp["out_tr_err"] = [out_tr_err]
             execution_result = execution_result.append(temp, ignore_index=True)
         self.best_objective_eit = z_low
         return (execution_result)
