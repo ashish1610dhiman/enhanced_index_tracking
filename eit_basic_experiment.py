@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import pandas as pd
-
+from collections import namedtuple
 
 class TestEitBasic:
     """
@@ -19,6 +19,11 @@ class TestEitBasic:
 
     def print_params(self):
         print(self.param_dict)
+
+    def give_params(self):
+        params=namedtuple('params', [param_name for param_name in self.param_dict.keys()])
+        my_params=params(**self.param_dict)
+        return (my_params)
 
     def step_1(self, from_root=True,verbose=True):
         if verbose == True:
