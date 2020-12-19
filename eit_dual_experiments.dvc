@@ -1,0 +1,5 @@
+outs:
+- md5: 7850a869ecccdeeb46892348d7337f30.dir
+  size: 566981
+  nfiles: 5
+  path: eit_dual_experiments
