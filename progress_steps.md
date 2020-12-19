@@ -2,7 +2,7 @@
 
 Work needs to be completed on following, work-streams:
 
-- [] Code EIT novel approach
+- [] Code EIT dual approach
 - [] Find new daily level data
 - [] Generate reduced/un-reduced data input
 - [] Test the two EIT approaches on un-reduced dataset
