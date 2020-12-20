@@ -6,3 +6,4 @@ __pycache__/
 /eit_dual_experiments/*
 /experiment_1/*
 .ipynb_checkpoints
+./notebooks/.ipynb_checkpoints/*
