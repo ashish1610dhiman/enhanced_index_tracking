@@ -29,7 +29,7 @@ def excess_return(returns, price, X_1, C):
             portfolio_return.append(r_jt * q_jT * (1 / T) * X_1["security_{}".format(j)])
         benchmark_return = returns["index"][t] * C / T
         # changed to % excess return
-        z.append((xsum(portfolio_return) - benchmark_return) / benchmark_return)
+        z.append((xsum(portfolio_return) - benchmark_return) / abs(benchmark_return))
     return (xsum(z))
 
 
@@ -55,13 +55,13 @@ def deviation(price, returns, C, X_1, t):
     for j in range(1, returns.shape[1]):
         q_jt = price["security_{}".format(j)][t]
         z.append(q_jt * X_1["security_{}".format(j)])
-    return (theta * price["index"][t] - xsum(z))
+    return ((theta * price["index"][t] - xsum(z)) / (theta * price["index"][t]))
 
 
 """ Read CMD line arguments """
 print("Running Linear Relaxation of EIT ...")
 # print ("len sys.argv in linear relax={}".format(len(sys.argv)))
-if len(sys.argv) != 13:
+if len(sys.argv) != 14:
     print("Error, Wrong no. of arguments={}, using default arguments".format(len(sys.argv)))
     file = 1
     T = 200
@@ -74,6 +74,7 @@ if len(sys.argv) != 13:
     f = 12
     w_return = 0.5
     w_risk = 0.5
+    w_risk_down = 1
     output = "./experiment_1/"
     # sys.exit(1)
 else:
@@ -89,7 +90,8 @@ else:
     f = float(sys.argv[9])
     w_return = float(sys.argv[10])  # weight for excess_return in objective
     w_risk = float(sys.argv[11])  ##weight for Tr-Error in objective
-    output = "./" + str(sys.argv[12]) + "/"
+    w_risk_down = float(sys.argv[12])
+    output = "./" + str(sys.argv[13]) + "/"
 
 if not os.path.exists(output):
     os.makedirs(output)
@@ -149,27 +151,17 @@ d = {x: LP.add_var(name="d_t{}".format(x), var_type="C", lb=0) for x in list(ret
 # Upside Devaition
 u = {x: LP.add_var(name="u_t{}".format(x), var_type="C", lb=0) for x in list(returns.index)}
 
-
-
-test=pd.DataFrame()
-for t in range(1,T+1):
-    temp=pd.DataFrame()
-    temp["d"]=[d[t].x]
-    temp["u"] = [u[t].x]
-    temp["I"]= [price["index"][t]]
-    temp["theta_I"]= [temp["I"] * theta]
-    #temp.index=[t]
-    test=test.append(temp)
-
 """ Add Objective and Constraints """
 """ Objective """
-#price["index_inv"]=1/price["index"]
+# price["index_inv"]=1/price["index"]
 excess_return = excess_return(returns, price, X_1, C)
 theta = C / price["index"][T]
+# Penalise downside deviation more
 LP.objective = maximize(w_return * excess_return - \
-                        (w_risk * (xsum((d[t]+u[t])/(price["index"][t]) for t in range(1, T + 1)))))
+                        (w_risk * 1 / T * (xsum((u[t]) for t in range(1, T + 1)))) - \
+                        (w_risk * w_risk_down / T * (xsum((d[t]) for t in range(1, T + 1)))))
 
-LP.write(output + "/LP_EIT_dual_index_{}.lp".format(file))
+# LP.write(output + "/LP_EIT_dual_index_{}.lp".format(file))
 
 """ Constarints """
 for j in range(1, returns.shape[1]):
@@ -221,6 +213,16 @@ for stock in stocks:
     temp["b"] = [b[stock].x]
     temp["s"] = [s[stock].x]
     result = result.append(temp, ignore_index=True)
+
+test = pd.DataFrame()
+for t in range(1, T + 1):
+    temp = pd.DataFrame()
+    temp["d"] = [d[t].x]
+    temp["u"] = [u[t].x]
+    temp["I"] = [price["index"][t]]
+    temp["theta_I"] = [temp["I"] * theta]
+    # temp.index=[t]
+    test = test.append(temp)
 
 # result.to_csv(output+"result_index_{}.csv".format(file),index=False)
 file1 = open(output + "/EIT_dual_LP_details.txt", "w+")
