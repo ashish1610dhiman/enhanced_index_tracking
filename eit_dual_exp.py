@@ -85,3 +85,43 @@ class TestEitDual:
             print("+----------------------------------------------------+")
             print("    Step 2a complete in {:.2f}s".format(time.time() - s))
             print("+----------------------------------------------------+")
+
+
+    def step_2b(self, kernel, buckets,from_root, verbose=True):
+        if verbose:
+            print("+----------------------------------------------------+")
+            print("     Step 2b: Solve EIT(kernel) and get lower-bound")
+            print("+----------------------------------------------------+")
+        s = time.time()
+        import src_dual.EIT_kernel
+        try:
+            status, z, in_excess_return, in_tr_err, out_excess_return, out_tr_err = \
+                src_dual.EIT_kernel.EIT_kernel(kernel, self.C, self.T, self.file, self.lamda, self.nuh, self.xii, \
+                                          self.k, self.pho, self.f, self.output, self.w_return, self.w_risk, \
+                                          self.w_risk_down, from_root)
+            failure = bool(status.value > 0)
+        except:
+            print("ERROR in EIT Kernel")
+            failure =True
+            print(status)
+
+        execution_result = src_dual.EIT_kernel.pd.DataFrame()
+        temp = src_dual.EIT_kernel.pd.DataFrame()
+        temp["bucket"] = [0]
+        temp["kernel_size"] = [len(kernel)]
+        temp["problem_status"] = [status]
+        temp["z_value"] = [z]
+        temp["in_excess_return"]=[in_excess_return]
+        temp["in_tr_err"]=[in_tr_err]
+        temp["out_excess_return"]=[out_excess_return]
+        temp["out_tr_err"]=[out_tr_err]
+        execution_result = execution_result.append(temp, ignore_index=True)
+        result_kernel = src_dual.EIT_kernel.pd.read_csv(self.output + \
+                                                        "/EIT_dual_kernel_result_index_{}.csv".format(self.file))
+        src_dual.EIT_kernel.plot_results(kernel, result_kernel, self.file, self.T, self.output,from_root);
+        return (z, failure,execution_result)
+        if verbose:
+            print("+----------------------------------------------------+")
+            print("    Step 2b complete in {:.2f}s".format(time.time() - s))
+            print("+----------------------------------------------------+")
+
