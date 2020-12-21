@@ -11,8 +11,8 @@ from collections import namedtuple
 
 class TestEitDual:
     """
-    Input: parameters for EIT_basic model
-    Output: Result of EIT_basic model
+    Input: parameters for EIT_dual model
+    Output: Result of EIT_dual model
     """
 
     def __init__(self, **kwargs):
@@ -59,3 +59,29 @@ class TestEitDual:
             print("    Step 1 complete in {:.2f}s".format(time.time() - s))
             print("+----------------------------------------------------+")
         return (failure, z_lp, result_lp)
+
+
+    def step_2a(self, failure, z_lp, result_lp,from_root=True, verbose=True):
+        if verbose:
+            print("+----------------------------------------------------+")
+            print("    Step 2a: Sort Securities and create buckets")
+            print("+----------------------------------------------------+")
+        s = time.time()
+        import src_dual.sort_and_buckets
+        # Create dummy problem using PULP
+        LP, q_T = src_dual.sort_and_buckets.dummy_problem(self.T, self.C, self.file, from_root, self.w_return,\
+                                                          self.w_risk,self.w_risk_down, option=2)
+        q_T.drop("index", inplace=True)
+        objective = LP.objective
+
+        # Create ranked list and buckets
+        L = src_dual.sort_and_buckets.sort_securities(result_lp, q_T, objective, self.lamda, self.C)  # Ranked List
+        kernel = L[:self.m]
+        initial_kernel = kernel.copy()  # Create copy of Initial Kernel
+        buckets = src_dual.sort_and_buckets.create_buckets(L, self.m, self.lbuck)
+        Nb = len(buckets)
+        return (kernel, buckets, L, Nb)
+        if verbose:
+            print("+----------------------------------------------------+")
+            print("    Step 2a complete in {:.2f}s".format(time.time() - s))
+            print("+----------------------------------------------------+")

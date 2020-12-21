@@ -79,7 +79,7 @@ def create_buckets(L, m, lbuck):
     return buckets
 
 
-def dummy_problem(T, C, file, from_root, w_return, w_risk, option):
+def dummy_problem(T, C, file, from_root, w_return, w_risk, w_risk_down, option):
     # import pulp as pulp
     # from sort_and_buckets import excess_return
     # from sort_and_buckets import deviation
@@ -104,7 +104,8 @@ def dummy_problem(T, C, file, from_root, w_return, w_risk, option):
         LP += w_return * (exc_ret)
     if option == 2:
         LP += w_return * (exc_ret) - \
-              w_risk * (pulp.lpSum([(d[t] + u[t])/(price["index"][t])  for t in range(1, T + 1)]))
+              w_risk *  (1 / T) * (pulp.lpSum([(u[t]) for t in range(1, T + 1)])) - \
+              w_risk * (w_risk_down / T) * (pulp.lpSum([(d[t]) for t in range(1, T + 1)]))
         for t in range(1, T + 1):
             LP += (d[t] - u[t] == deviation(price, returns, C, X_1, t))
     q_T = price.iloc[T]
