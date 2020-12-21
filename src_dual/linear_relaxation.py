@@ -21,6 +21,7 @@ def excess_return(returns, price, X_1, C):
     # import mip.model as mip
     z = []
     T = returns.shape[0]
+    theta = C / price["index"].iloc[-1]
     for t in range(1, T + 1):
         portfolio_return = []
         for j in range(1, returns.shape[1]):
@@ -29,7 +30,7 @@ def excess_return(returns, price, X_1, C):
             portfolio_return.append(r_jt * q_jT * (1 / T) * X_1["security_{}".format(j)])
         benchmark_return = returns["index"][t] * C / T
         # changed to % excess return
-        z.append((xsum(portfolio_return) - benchmark_return) / abs(benchmark_return))
+        z.append((xsum(portfolio_return) - benchmark_return) / (theta * price["index"][t]))
     return (xsum(z))
 
 
@@ -59,7 +60,7 @@ def deviation(price, returns, C, X_1, t):
 
 
 """ Read CMD line arguments """
-print("Running Linear Relaxation of EIT ...")
+print("Running Linear Relaxation of EIT ...with input args={}".format(len(sys.argv)))
 # print ("len sys.argv in linear relax={}".format(len(sys.argv)))
 if len(sys.argv) != 14:
     print("Error, Wrong no. of arguments={}, using default arguments".format(len(sys.argv)))
@@ -158,8 +159,8 @@ excess_return = excess_return(returns, price, X_1, C)
 theta = C / price["index"][T]
 # Penalise downside deviation more
 LP.objective = maximize(w_return * excess_return - \
-                        (w_risk * 1 / T * (xsum((u[t]) for t in range(1, T + 1)))) - \
-                        (w_risk * w_risk_down / T * (xsum((d[t]) for t in range(1, T + 1)))))
+                        (w_risk * (1 / T) * (xsum((u[t]) for t in range(1, T + 1)))) - \
+                        (w_risk * (w_risk_down / T) * (xsum((d[t]) for t in range(1, T + 1)))))
 
 # LP.write(output + "/LP_EIT_dual_index_{}.lp".format(file))
 
@@ -214,15 +215,16 @@ for stock in stocks:
     temp["s"] = [s[stock].x]
     result = result.append(temp, ignore_index=True)
 
-test = pd.DataFrame()
-for t in range(1, T + 1):
-    temp = pd.DataFrame()
-    temp["d"] = [d[t].x]
-    temp["u"] = [u[t].x]
-    temp["I"] = [price["index"][t]]
-    temp["theta_I"] = [temp["I"] * theta]
-    # temp.index=[t]
-    test = test.append(temp)
+# test func
+# test = pd.DataFrame()
+# for t in range(1, T + 1):
+#     temp = pd.DataFrame()
+#     temp["d"] = [d[t].x]
+#     temp["u"] = [u[t].x]
+#     temp["I"] = [price["index"][t]]
+#     temp["theta_I"] = [temp["I"] * theta]
+#     # temp.index=[t]
+#     test = test.append(temp)
 
 # result.to_csv(output+"result_index_{}.csv".format(file),index=False)
 file1 = open(output + "/EIT_dual_LP_details.txt", "w+")

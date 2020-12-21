@@ -31,7 +31,7 @@ class TestEitDual:
         return (my_params)
 
     def step_1(self, from_root=True,verbose=True):
-        print ("check mate")
+        print ("os.cwdir()")
         if verbose == True:
             print("+----------------------------------------------------+")
             print("    Step 1: Solving Linear Relaxation of EIT-Dual")
@@ -41,7 +41,7 @@ class TestEitDual:
         path_root="." if from_root else ".."
         out = os.system("python {}/src_dual/linear_relaxation.py {} {} {} {} {} {} {} {} {} {} {} {}". \
                         format(path_root,self.file, self.T, self.xii, self.k, self.pho, self.nuh, self.C,\
-                               self.lamda, self.f, self.w_return, self.w_risk, self.output))
+                               self.lamda, self.f, self.w_return, self.w_risk, self.w_risk_down, self.output))
         #print (out)
         assert out == 0, "Error in linear relaxation"
         text_file = open(self.output + "/EIT_dual_LP_details.txt")
