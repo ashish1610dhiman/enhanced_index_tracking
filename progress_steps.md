@@ -2,11 +2,11 @@
 
 Work needs to be completed on following, work-streams:
 
-- [] Code EIT dual approach
+- [x] Code EIT dual approach
   - [x] Linear Relaxation
-  - [] sort and bucket
-  - [] EIT Dual Kernel
-  - [] EIT Dual Kernel-Bucket
+  - [x] sort and bucket
+  - [x] EIT Dual Kernel
+  - [x] EIT Dual Kernel-Bucket
 - [] Find new daily level data
 - [] Generate reduced/un-reduced data input
 - [] Test the two EIT approaches on un-reduced dataset

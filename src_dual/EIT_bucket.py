@@ -5,62 +5,97 @@ Created on Sun Apr 21 22:42:45 2019
 @author: Dhiman
 """
 
+from mip import Model, xsum, maximize
+import pandas as pd
+import numpy as np
+import random
+import os
+
 """ Define the functions for Excess Return and Deviation Calculation """
-def excess_return(returns,price,X_1,C):
-    import mip.model as mip
-    z=[]
-    T=returns.shape[0]
-    for t in range(1,T+1):
-        portfolio_return=[]
-        for j in list(returns.columns):
-            if j=='index':
-                continue
-            r_jt=returns[j][t]
-            q_jT=price[j][T]
-            portfolio_return.append(r_jt*q_jT*X_1[j])
-        benchmark_return=returns["index"][t]*C
-        z.append(mip.xsum(portfolio_return)-benchmark_return)
-    return (mip.xsum(z)/T,benchmark_return/T)
+def excess_return(returns, price, X_1, C):
+    # import mip.model as mip
+    z = []
+    T = returns.shape[0]
+    theta = C / price["index"].iloc[-1]
+    for t in range(1, T + 1):
+        portfolio_return = []
+        for j in list(returns.columns)[1:]:
+            r_jt = returns[j][t]
+            q_jT = price[j][T]
+            portfolio_return.append(r_jt * q_jT * (1 / T) * X_1[j])
+        benchmark_return = returns["index"][t] * C / T
+        # changed to % excess return
+        z.append((xsum(portfolio_return) - benchmark_return) / (theta * price["index"][t]))
+    return (xsum(z))
 
-def deviation(price,returns,C,X_1,t):
-    import mip.model as mip
-    theta=C/price["index"].iloc[-1]
-    z=[] #For d
-    for j in list(returns.columns):
-        if j=='index':
-            continue
-        q_jt=price[j][t]
-        z.append(q_jt*X_1[j])
-    return (theta*price["index"][t]-mip.xsum(z))
 
-def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,w_return,w_risk,k):
-    import pandas as pd
-    import mip.model as mip
-    import numpy as np
-    import random
-    #from EIT_kernel import excess_return
-    #from EIT_kernel import deviation
+def deviation(price, returns, C, X_1, t):
+    # import mip.model as mip
+    theta = C / price["index"].iloc[-1]
+    z = []  # For d
+    for j in list(returns.columns)[1:]:
+        q_jt = price[j][t]
+        z.append(q_jt * X_1[j])
+    return ((theta * price["index"][t] - xsum(z)) / (theta * price["index"][t]))
+
+
+def performance(price, result, C, T):
+    in_price = price[0:T + 1]
+    out_price = price[T + 1:]
+    in_returns = (in_price - in_price.shift(1)) / in_price.shift(1)
+    in_returns.drop([0], axis=0, inplace=True)
+    out_returns = (out_price - out_price.shift(1)) / out_price.shift(1)
+    out_returns.drop([T + 1], axis=0, inplace=True)
+    result.index = result.security
+    # Get In sample and out of sample Excess Return
+    in_q_T = in_price.iloc[-1]
+    out_q_T = in_q_T
+    y_in = result["X_1"] * in_returns * in_q_T
+    y_out = result["X_1"] * out_returns * out_q_T
+    in_excess_return = y_in.mean().sum() - (in_returns["index"] * C).mean()
+    out_excess_return = y_out.mean().sum() - (out_returns["index"] * C).mean()
+    z_in = result["X_1"] * in_price
+    z_out = result["X_1"] * out_price
+    in_tr_err = (C / in_price["index"].iloc[-1]) * in_price["index"].sum() - z_in.sum().sum()
+    out_tr_err = (C / out_price["index"].iloc[0]) * out_price["index"].sum() - z_out.sum().sum()
+    return (in_excess_return, in_tr_err, out_excess_return, out_tr_err)
+
+def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,xii,k,pho,f,output, \
+               w_return, w_risk, w_risk_down,from_root=True):
+    # from EIT_kernel import excess_return
+    # from EIT_kernel import deviation
     """ Read the input index file """
-    price=pd.read_csv("../input/index-weekly-data/index_{}.csv".format(file))
-    price=price[["index"]+kernel][0:T+1]
-    returns=(price-price.shift(1))/price.shift(1)
-    returns.drop([0],axis=0,inplace=True)
+    if from_root:
+        file_path = "./input/index-weekly-data/index_{}.csv"
+    else:
+        n_dirs_up = os.getcwd().split("/")
+        n_dirs_up.reverse()
+        n_dirs_up = n_dirs_up.index("eit_paper")
+        root_path = "/".join([".."] * n_dirs_up)
+        file_path = root_path + "/input/index-weekly-data/index_{}.csv"
+    price = pd.read_csv(file_path.format(file))
+    kernel_i = kernel + bucket
+    price = price[["index"] + kernel_i][0:T + 1]
+    returns = (price - price.shift(1)) / price.shift(1)
+    returns.drop([0], axis=0, inplace=True)
     """ Parameters """
-    tau=0 #Additional Cash Fund 
-    pho=0.4 #Transaction Cost Proportion
-    c_b=0.01 #Constant for buying cost
-    c_s=0.01 #Constant for selling cost
-    f=min(price.min())/3 #Fixed Txn Cost
+    tau = 0  # Additional Cash Fund
+    # pho=0.4 #Transaction Cost Proportion
+    c_b = 0.01  # Constant for buying cost
+    c_s = 0.01  # Constant for selling cost
+    # f=min(price.min())/3 #Fixed Txn Cost
     """ Create the input variables """
-    n=price.shape[1]-1
-    X_0=np.zeros((n,1)) #Gives units of jth stock in original portfolio
-    T=returns.shape[0] #Training limit
-    theta=C/price["index"][T]
-    for j in random.sample(kernel,k):
-        X_0[kernel.index(j)]=(C/k)/price[j].iloc[0]
+    n = price.shape[1] - 1
+    X_0 = np.zeros((n, 1))  # Gives units of jth stock in original portfolio
+    T = returns.shape[0]  # Training limit
+    theta = C / price["index"][T]
+    for j in random.sample(kernel_i, min(len(kernel_i), k)):
+        # print (price[j].iloc[0].shape)
+        # print (X_0[kernel.index(j)].shape)
+        X_0[kernel_i.index(j)] = (C / k) / price[j].iloc[0]
     """ Define the EIT-Dual and necessary problem variables """
     #Solve EIT Kernel
-    LP = mip.Model("EIT_Dual_bucket",mip.MAXIMIZE)
+    LP = Model("EIT_Dual_kernel_bucket")
     #Gives units of jth stock in rebalaced portfolio
     X_1 = {x:LP.add_var(name="x1_{}".format(x),var_type="C",lb=0) for x in list(returns.columns)[1:]}
     #Binary Variable depicting if investor holds stock j
@@ -77,81 +112,92 @@ def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,w_return
     u={x:LP.add_var(name="u_t{}".format(x),var_type="C",lb=0) for x in list(returns.index)}
     """ Add Objective and Constraints """
     """ Objective """
-    (excess,benchmark)=excess_return(returns,price,X_1,C)
-    LP+=w_return*(excess/benchmark)-w_risk*(mip.xsum([d[t]+u[t] for t in range(1,T+1)])/C)
-    """ Constarints """
+    LP.objective = maximize(w_return * excess_return(returns, price, X_1, C) - \
+                            (w_risk * (1 / T) * (xsum((u[t]) for t in range(1, T + 1)))) - \
+                            (w_risk * (w_risk_down / T) * (xsum((d[t]) for t in range(1, T + 1)))))
+    """ Constraints """
     stocks=list(returns.columns)[1:]  
     for stock in stocks:
         q_jT=price[stock][T]
-        if X_0[kernel.index(stock)]==0:
+        if X_0[kernel_i.index(stock)]==0:
             LP+=y[stock]==w[stock]
         #Constraint from eqn. 5
         LP+=(lamda*C*y[stock]<= X_1[stock]*q_jT)
         LP+=(X_1[stock]*q_jT <=nuh*C*y[stock])
         #Constraint from eqn. 8
-        LP+=(b[stock]-s[stock]==(X_1[stock]*q_jT-float(X_0[kernel.index(stock)]*q_jT)))
+        LP+=(b[stock]-s[stock]==(X_1[stock]*q_jT-float(X_0[kernel_i.index(stock)]*q_jT)))
         #Constraint from eqn. 9
         LP+=(b[stock]+s[stock]<=nuh*C*w[stock])
         #Constraint for 
         #LP+=(b[stock]<=(nuh*C-X_0[j-1]*q_jT)*w[stock]) #Eqn 14
         #LP+=(s[stock]<=X_0[j-1]*q_jT*w[stock]) # Eqn 15
     #Constraint from eqn. 6
-    LP+=(mip.xsum(y.values())<=k)
+    LP+=(xsum(y.values())<=k)
     #Constraint from eqn. 7
-    LP+=(mip.xsum([X_1[stock]*price[stock][T] for stock in stocks])<=C)
+    LP+=(xsum([X_1[stock]*price[stock][T] for stock in stocks])<=C)
     #Constraint from eqn. 10
-    LP+=(mip.xsum([c_b*b[stock]+c_s*s[stock]+f*w[stock] for stock in stocks])<=pho*C)
+    LP+=(xsum([c_b*b[stock]+c_s*s[stock]+f*w[stock] for stock in stocks])<=pho*C)
     for t in range(1,T+1):
         #Constraint from eqn. 4
         LP+=(d[t]-u[t]==deviation(price,returns,C,X_1,t))
     #Constraint from eqn. 16
     #LP+=(mip.xsum([d[t]+u[t] for t in range(1,T+1)])<=xii*C)
     #Constraint for lower bound from previous
-    LP+=((w_return*(excess/benchmark)-w_risk*(mip.xsum([d[t]+u[t] for t in range(1,T+1)])/C))>=z_low)
+    LP+=((w_return * excess_return(returns, price, X_1, C) - \
+                            (w_risk * (1 / T) * (xsum((u[t]) for t in range(1, T + 1)))) - \
+                            (w_risk * (w_risk_down / T) * (xsum((d[t]) for t in range(1, T + 1)))))>=z_low)
     #Constraint for atleat 1 inlcusion from bucket
-    LP+=(mip.xsum([y[stock] for stock in bucket])>=1)
+    LP+=(xsum([y[stock] for stock in bucket])>=1)
     print("Solving EIT(kernel+bucket-{})".format(bucket_no))
     LP.emphasis=1
     LP.verbose=0
     status=LP.optimize()
     print("***************************************************")
-    print("Optimisation Status={},Objective Value={}".format(str(status),str(round(LP.objective_value,3))))
+    print("Optimisation Status={},Objective Value={}".format(str(status), LP.objective_value))
     print("OPTIMAL(0), ERROR(-1), INFEASIBLE(1), UNBOUNDED(2)")
     print("Following stocks from bucket added to kernel:")
-    selected_bucket=[]
-    if status==0:
+    selected_bucket = []
+    in_excess_return, in_tr_err, out_excess_return, out_tr_err = None, None, None, None
+    if status.value == 0:
         for stock in bucket:
-            if y[stock].x>0:
+            # print (y[stock].x)
+            if y[stock].x > 0:
                 selected_bucket.append(stock)
                 print(stock)
-        result=pd.DataFrame()
-        try:
-            for stock in stocks:
-                temp=pd.DataFrame()
-                temp["security"]=[stock]
-                temp["X_0"]=X_0[kernel.index(stock)]
-                temp["X_1"]=[X_1[stock].x]
-                temp["y"]=[y[stock].x]
-                temp["w"]=[w[stock].x]
-                temp["b"]=[b[stock].x]
-                temp["s"]=[s[stock].x]
-                result=result.append(temp,ignore_index=True)
-            result.to_csv("EIT_Dual_bucket_{}_result_index_{}.csv".format(bucket_no,file),index=False)
-        except:
-            print("No result file created for bucket={}".format(bucket_no))
+        result = pd.DataFrame()
+        for stock in stocks:
+            temp = pd.DataFrame()
+            temp["security"] = [stock]
+            temp["X_0"] = X_0[kernel_i.index(stock)]
+            temp["X_1"] = [X_1[stock].x]
+            temp["y"] = [y[stock].x]
+            temp["w"] = [w[stock].x]
+            temp["b"] = [b[stock].x]
+            temp["s"] = [s[stock].x]
+            result = result.append(temp, ignore_index=True)
+        result.to_csv(output + "/EIT_bucket_{}_result_index_{}.csv".format(bucket_no, file), index=False)
+        in_excess_return, in_tr_err, out_excess_return, out_tr_err = performance(pd.read_csv(file_path.format(file)),
+                                                                                 result, C, T)
     print("***************************************************")
-    LP.write("EIT_Dual_bucket_{}_for_index_{}.lp".format(bucket_no,file))
-    return(status,round(LP.objective_value,3),selected_bucket)
+    LP.write(output + "/EIT_bucket_{}_for_index_{}.lp".format(bucket_no, file))
+    return (status, LP.objective_value, selected_bucket, LP, in_excess_return, in_tr_err, out_excess_return, out_tr_err)
 
 
-   
-def plot_results(kernel,bucket,bucket_no,result,file,T):
+def plot_results(kernel,bucket,bucket_no,result,file,T,output,from_root=True):
     import pandas as pd
     import numpy as np
     from matplotlib.collections import LineCollection
     import matplotlib.pyplot as plt
-    price=pd.read_csv("../input/index-weekly-data/index_{}.csv".format(file))
-    price=price[["index"]+kernel][0:201]
+    if from_root:
+        file_path = "./input/index-weekly-data/index_{}.csv"
+    else:
+        n_dirs_up = os.getcwd().split("/")
+        n_dirs_up.reverse()
+        n_dirs_up = n_dirs_up.index("eit_paper")
+        root_path = "/".join([".."] * n_dirs_up)
+        file_path = root_path + "/input/index-weekly-data/index_{}.csv"
+    price = pd.read_csv(file_path.format(file))
+    price=price[["index"]+kernel+bucket][0:201]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)
     q_T=price.iloc[T][1:]
@@ -162,8 +208,8 @@ def plot_results(kernel,bucket,bucket_no,result,file,T):
     tracking=[1]
     portfolio_return=[]
     #Read full 290 weeks data
-    price=pd.read_csv("../input/index-weekly-data/index_{}.csv".format(file))
-    price=price[["index"]+kernel]
+    price=pd.read_csv(file_path.format(file))
+    price=price[["index"]+kernel+bucket]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)
     #Looping
@@ -177,7 +223,7 @@ def plot_results(kernel,bucket,bucket_no,result,file,T):
     plot_df["portfolio_value"]=tracking
     plot_df["time_period"]=list(price.index)
     plot_df.index=price.index
-    fig, ax = plt.subplots(figsize=(14,9))  
+    fig, ax = plt.subplots(figsize=(14,9))
     ax.set_xlim(0,price.shape[0])
     try:
         ax.set_ylim(-0.3, 1.1*max(index+tracking))
@@ -200,6 +246,6 @@ def plot_results(kernel,bucket,bucket_no,result,file,T):
     plt.fill_between(x=ind_2[:,0], y1=port_2[:,1]+3*np.std(portfolio_return[T:]),
           y2=port_2[:,1]-3*np.std(portfolio_return),
           color=(255/255,87/255,86/255,0.2))
-    plt.title("EIT_Dual_kernel_bucket_{} performance for index={}\n".format(bucket_no,file))
-    plt.savefig("EIT_Dual_kernel_bucket_{} for index_{}.jpg".format(bucket_no,file),dpi=250)
+    plt.title("EIT_dual_kernel_bucket_{} performance for index={}\n".format(bucket_no,file))
+    plt.savefig(output+"/EIT_dual_kernel_bucket_{} for index_{}.jpg".format(bucket_no,file),dpi=250)
     plt.close()
