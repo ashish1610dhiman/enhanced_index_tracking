@@ -41,6 +41,7 @@ def excess_return(returns, price, X_1, C):
     # import pulp as pulp
     T = returns.shape[0]
     z = []
+    theta = C / price["index"].iloc[-1]
     for t in range(1, T + 1):
         portfolio_return = []
         for j in range(1, returns.shape[1]):
@@ -48,7 +49,7 @@ def excess_return(returns, price, X_1, C):
             q_jT = price["security_{}".format(j)][T]
             portfolio_return.append(r_jt * q_jT * X_1["security_{}".format(j)])
         benchmark_return = returns["index"][t] * C
-        z.append((pulp.lpSum(portfolio_return) - benchmark_return)/benchmark_return)
+        z.append((pulp.lpSum(portfolio_return) - benchmark_return) / (theta * price["index"][t]))
     return (pulp.lpSum(z) / T)
 
 
@@ -59,7 +60,7 @@ def deviation(price, returns, C, X_1, t):
     for j in range(1, returns.shape[1]):
         q_jt = price["security_{}".format(j)][t]
         z.append(q_jt * X_1["security_{}".format(j)])
-    return (theta * price["index"][t] - pulp.lpSum(z))
+    return ((theta * price["index"][t] - pulp.lpSum(z) )/ (theta * price["index"][t]))
 
 
 def create_buckets(L, m, lbuck):

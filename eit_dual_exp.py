@@ -31,7 +31,7 @@ class TestEitDual:
         return (my_params)
 
     def step_1(self, from_root=True,verbose=True):
-        print ("os.cwdir()")
+        #print (os.getcwd())
         if verbose == True:
             print("+----------------------------------------------------+")
             print("    Step 1: Solving Linear Relaxation of EIT-Dual")
@@ -39,7 +39,7 @@ class TestEitDual:
         s = time.time()
         # print ("len sys.argv in experiment={}".format(len(sys.argv)))
         path_root="." if from_root else ".."
-        out = os.system("python {}/src_dual/linear_relaxation.py {} {} {} {} {} {} {} {} {} {} {} {}". \
+        out = os.system("python {}/src_dual/linear_relaxation.py {} {} {} {} {} {} {} {} {} {} {} {} {}". \
                         format(path_root,self.file, self.T, self.xii, self.k, self.pho, self.nuh, self.C,\
                                self.lamda, self.f, self.w_return, self.w_risk, self.w_risk_down, self.output))
         #print (out)
