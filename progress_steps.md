@@ -7,10 +7,9 @@ Work needs to be completed on following, work-streams:
   - [x] sort and bucket
   - [x] EIT Dual Kernel
   - [x] EIT Dual Kernel-Bucket
-- [] Check Performance function
+- [x] Check Performance function @updated it
 - [] Test the two EIT approaches on un-reduced dataset
 - [] Find new daily level data
-- [] Generate reduced/un-reduced data input
-- [] Test the two EIT approaches on un-reduced dataset
+- [] Generate reduced data input
 - [] Test the two EIT approaches on reduced dataset
 
