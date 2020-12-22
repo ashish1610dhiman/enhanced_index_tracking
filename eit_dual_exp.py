@@ -96,15 +96,15 @@ class TestEitDual:
         s = time.time()
         import src_dual.EIT_kernel
         try:
-            status, z, in_excess_return, in_tr_err, out_excess_return, out_tr_err = \
+            status, z, in_excess_return, in_tr_err, out_excess_return, out_tr_err, portfolio_size = \
                 src_dual.EIT_kernel.EIT_kernel(kernel, self.C, self.T, self.file, self.lamda, self.nuh, self.xii, \
                                           self.k, self.pho, self.f, self.output, self.w_return, self.w_risk, \
                                           self.w_risk_down, from_root)
             failure = bool(status.value > 0)
-        except:
+        except Exception as e:
             print("ERROR in EIT Kernel")
-            failure =True
-            print(status)
+            traceback.print_exc()
+            failure = True
 
         execution_result = src_dual.EIT_kernel.pd.DataFrame()
         temp = src_dual.EIT_kernel.pd.DataFrame()
@@ -116,6 +116,7 @@ class TestEitDual:
         temp["in_tr_err"]=[in_tr_err]
         temp["out_excess_return"]=[out_excess_return]
         temp["out_tr_err"]=[out_tr_err]
+        temp["portfolio_size"] = [portfolio_size]
         execution_result = execution_result.append(temp, ignore_index=True)
         result_kernel = src_dual.EIT_kernel.pd.read_csv(self.output + \
                                                         "/EIT_dual_kernel_result_index_{}.csv".format(self.file))
@@ -151,7 +152,7 @@ class TestEitDual:
             # Solve EIT(K+Bi)
             try:
                 status, z, selected, EIT_model, in_excess_return,\
-                in_tr_err, out_excess_return, out_tr_err = \
+                in_tr_err, out_excess_return, out_tr_err, portfolio_size = \
                     src_dual.EIT_bucket.EIT_bucket(kernel, bucket, i, failure, z_low,self.C, self.T, self.file,\
                                               self.lamda, self.nuh, self.xii, self.k, self.pho, self.f,\
                                               self.output, self.w_return, self.w_risk, self. w_risk_down, from_root)
@@ -204,6 +205,7 @@ class TestEitDual:
             temp["in_tr_err"] = [in_tr_err]
             temp["out_excess_return"] = [out_excess_return]
             temp["out_tr_err"] = [out_tr_err]
+            temp["portfolio_size"] = [portfolio_size]
             execution_result = execution_result.append(temp, ignore_index=True)
         self.best_objective_eit = z_low
         return (execution_result)

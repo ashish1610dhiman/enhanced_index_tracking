@@ -92,7 +92,6 @@ class TestEitBasic:
         except:
             print("ERROR in EIT Kernel")
             failure =True
-            print(status)
 
         execution_result = src.EIT_kernel.pd.DataFrame()
         temp = src.EIT_kernel.pd.DataFrame()
