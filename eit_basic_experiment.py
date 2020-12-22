@@ -3,6 +3,7 @@ import sys
 import time
 import pandas as pd
 from collections import namedtuple
+import traceback
 
 class TestEitBasic:
     """
@@ -86,12 +87,14 @@ class TestEitBasic:
         s = time.time()
         import src.EIT_kernel
         try:
-            status, z,in_excess_return, in_tr_err, out_excess_return, out_tr_err = src.EIT_kernel.EIT_kernel(kernel, self.C, self.T, self.file, self.lamda, \
-                                                  self.nuh, self.xii, self.k, self.pho, self.f, self.output,from_root)
+            status, z,in_excess_return, in_tr_err, out_excess_return, out_tr_err, portfolio_size =\
+                src.EIT_kernel.EIT_kernel(kernel, self.C, self.T, self.file, self.lamda, \
+                                          self.nuh, self.xii, self.k, self.pho, self.f, self.output,from_root)
             failure = bool(status.value > 0)
-        except:
+        except Exception as e:
             print("ERROR in EIT Kernel")
-            failure =True
+            traceback.print_exc()
+            failure = True
 
         execution_result = src.EIT_kernel.pd.DataFrame()
         temp = src.EIT_kernel.pd.DataFrame()
@@ -103,6 +106,7 @@ class TestEitBasic:
         temp["in_tr_err"]=[in_tr_err]
         temp["out_excess_return"]=[out_excess_return]
         temp["out_tr_err"]=[out_tr_err]
+        temp["portfolio_size"] = [portfolio_size]
         execution_result = execution_result.append(temp, ignore_index=True)
         result_kernel = src.EIT_kernel.pd.read_csv(self.output + "/EIT_kernel_result_index_{}.csv".format(self.file))
         src.EIT_kernel.plot_results(kernel, result_kernel, self.file, self.T, self.output,from_root);
@@ -137,13 +141,14 @@ class TestEitBasic:
             # Solve EIT(K+Bi)
             try:
                 status, z, selected, EIT_model, in_excess_return,\
-                in_tr_err, out_excess_return, out_tr_err = \
+                in_tr_err, out_excess_return, out_tr_err, portfolio_size = \
                     src.EIT_bucket.EIT_bucket(kernel, bucket, i, failure, z_low,self.C, self.T, self.file,\
                                               self.lamda, self.nuh, self.xii, self.k, self.pho, self.f,\
                                               self.output,from_root)
                 eit_model_record.append(EIT_model)
-            except:
+            except Exception as e:
                 print("Error in this bucket")
+                traceback.print_exc()
                 continue
             if status.value == 0:  # Check if EIT(kernel+bucket) is feasible
                 if failure == True:  # check if EIT(Kernel) was in-feasible
@@ -189,6 +194,7 @@ class TestEitBasic:
             temp["in_tr_err"] = [in_tr_err]
             temp["out_excess_return"] = [out_excess_return]
             temp["out_tr_err"] = [out_tr_err]
+            temp["portfolio_size"] = [portfolio_size]
             execution_result = execution_result.append(temp, ignore_index=True)
         self.best_objective_eit = z_low
         return (execution_result)

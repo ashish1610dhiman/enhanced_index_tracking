@@ -48,16 +48,19 @@ def performance(price, result, C, T):
     result.index = result.security
     # Get In sample and out of sample Excess Return
     in_q_T = in_price.iloc[-1]
-    out_q_T = out_price.iloc[-1]
-    y_in = result["X_1"] * in_returns * in_q_T
+    out_q_T = in_q_T
+    y_in = result["X_1"] * in_returns * in_q_T #Stock Return at times t
     y_out = result["X_1"] * out_returns * out_q_T
-    in_excess_return = y_in.mean().sum() - (in_returns["index"] * C).mean()
-    out_excess_return = y_out.mean().sum() - (out_returns["index"] * C).mean()
-    z_in = result["X_1"] * in_price
+    return_scaling = C/((result["X_1"] * out_q_T).sum()) #B'cos not entire C might be invested
+    in_excess_return = ((y_in.sum(axis=1) * return_scaling) - (in_returns["index"] * C)).mean()
+    out_excess_return = ((y_out.sum(axis=1) * return_scaling) - (out_returns["index"] * C)).mean()
+    z_in = result["X_1"] * in_price # Value of stocks in portfolio at time =t
     z_out = result["X_1"] * out_price
-    in_tr_err = (C / in_price["index"].iloc[-1]) * in_price["index"].sum() - z_in.sum().sum()
-    out_tr_err = (C / out_price["index"].iloc[0]) * out_price["index"].sum() - z_out.sum().sum()
-    return (in_excess_return, in_tr_err, out_excess_return, out_tr_err)
+    theta=C / in_price["index"].iloc[-1]
+    in_tr_err = abs((theta * in_price["index"]) - (z_in.sum(axis=1))).mean()
+    out_tr_err = abs((theta * out_price["index"]) - (z_out.sum(axis=1))).mean()
+    portfolio_size=(result["X_1"]>0).sum()
+    return (in_excess_return, in_tr_err, out_excess_return, out_tr_err,portfolio_size)
 
 
 def EIT_kernel(kernel, C, T, file, lamda, nuh, xii, k, pho, f, output, from_root=True):
@@ -155,9 +158,9 @@ def EIT_kernel(kernel, C, T, file, lamda, nuh, xii, k, pho, f, output, from_root
         result = result.append(temp, ignore_index=True)
     result.to_csv(output + "/EIT_kernel_result_index_{}.csv".format(file), index=False)
     LP.write(output + "/EIT_kernel_for_index_{}.lp".format(file))
-    in_excess_return, in_tr_err, out_excess_return, out_tr_err = performance(pd.read_csv(file_path.format(file)),
-                                                                             result, C, T)
-    return (status, LP.objective_value, in_excess_return, in_tr_err, out_excess_return, out_tr_err)
+    in_excess_return, in_tr_err, out_excess_return, out_tr_err,portfolio_size =\
+        performance(pd.read_csv(file_path.format(file)),result, C, T)
+    return (status, LP.objective_value, in_excess_return, in_tr_err, out_excess_return, out_tr_err, portfolio_size)
 
 
 def plot_results(kernel, result, file, T, output, from_root=True):
