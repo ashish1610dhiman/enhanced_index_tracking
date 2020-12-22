@@ -4,6 +4,8 @@ __pycache__/
 /eit_basic_experiments/*
 /eit_basic_experiments
 /eit_dual_experiments/*
+/eit_basic_dual_unreduced_experiments/*
 /experiment_1/*
 .ipynb_checkpoints
 ./notebooks/.ipynb_checkpoints/*
+/eit_basic_dual_unreduced_experiments
