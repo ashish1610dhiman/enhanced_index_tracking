@@ -1,0 +1,4 @@
+outs:
+- md5: ee27969489f5939ce75ef0ca62c376b3
+  size: 103197
+  path: ^GSPC.csv
