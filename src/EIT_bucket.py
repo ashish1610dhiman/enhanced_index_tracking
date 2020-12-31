@@ -194,7 +194,7 @@ def plot_results(kernel,bucket,bucket_no,result,file,T,output,from_root=True):
         root_path = "/".join([".."] * n_dirs_up)
         file_path = root_path + "/input/index-weekly-data/index_{}.csv"
     price = pd.read_csv(file_path.format(file))
-    price=price[["index"]+kernel+bucket][0:201]
+    price=price[["index"]+kernel+bucket][0:T+1]
     returns=(price-price.shift(1))/price.shift(1)
     returns.drop([0],axis=0,inplace=True)
     q_T=price.iloc[T][1:]

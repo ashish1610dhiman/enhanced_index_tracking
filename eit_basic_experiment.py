@@ -96,6 +96,9 @@ class TestEitBasic:
             traceback.print_exc()
             failure = True
 
+        if failure:
+            print ("Returning Null, due to failure of EIT Kernel")
+            return (None, failure, None)
         execution_result = src.EIT_kernel.pd.DataFrame()
         temp = src.EIT_kernel.pd.DataFrame()
         temp["bucket"] = [0]
@@ -217,8 +220,11 @@ class TestEitBasic:
         if not failure:
             kernel, buckets, L, Nb = self.step_2a(failure, z_lp, result_lp,from_root=from_root,verbose=verbose)
             z, failure,execution_result = self.step_2b(kernel, buckets, from_root=from_root, verbose=verbose)
-            execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,execution_result,\
-                                         from_root=from_root,verbose=verbose)
+            if not failure:
+                execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,execution_result,\
+                                             from_root=from_root,verbose=verbose)
+            else:
+                execution_result=None
         else:
             execution_result=None
         if verbose:
