@@ -76,7 +76,7 @@ if len(sys.argv) != 11:
     # sys.exit(1)
 else:
     # print (sys.argv[1])
-    file = int(sys.argv[1])
+    file = sys.argv[1]
     T = int(sys.argv[2])
     xii = float(sys.argv[3])  # Proportion cosntant for TrE
     k = int(sys.argv[4])
