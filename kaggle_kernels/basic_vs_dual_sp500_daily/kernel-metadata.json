@@ -1,13 +1,14 @@
 {
-  "id": "ashish1610dhiman/INSERT_KERNEL_SLUG_HERE",
-  "title": "INSERT_TITLE_HERE",
-  "code_file": "INSERT_CODE_FILE_PATH_HERE",
-  "language": "Pick one of: {python,r,rmarkdown}",
-  "kernel_type": "Pick one of: {script,notebook}",
+  "id": "ashish1610dhiman/basic-vs-dual-sp500-daily7",
+  "id_no": 1234567897,
+  "title": "basic-vs-dual-sp500-daily7",
+  "code_file": "../../notebooks/eit_dual_testing.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
   "is_private": "true",
   "enable_gpu": "false",
   "enable_internet": "true",
-  "dataset_sources": [],
+  "dataset_sources": ["","","",""],
   "competition_sources": [],
   "kernel_sources": []
 }
