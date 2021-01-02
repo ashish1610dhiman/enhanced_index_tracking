@@ -153,7 +153,7 @@ class TestEitBasic:
                 print("Error in this bucket")
                 traceback.print_exc()
                 continue
-            if status.value == 0:  # Check if EIT(kernel+bucket) is feasible
+            if status.value in [0,3]:  # Check if EIT(kernel+bucket) is feasible
                 if failure == True:  # check if EIT(Kernel) was in-feasible
                     failure = False
                 # Update lower_bound

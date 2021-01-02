@@ -153,14 +153,15 @@ def EIT_bucket(kernel,bucket,bucket_no,failure,z_low,C,T,file,lamda,nuh,xii,k,ph
     print("Solving EIT(kernel+bucket-{})".format(bucket_no))
     LP.emphasis=1
     LP.verbose=0
-    status=LP.optimize()
+    #LP.max_seconds=300
+    status=LP.optimize(max_seconds_same_incumbent=100,max_seconds=T*5)
     print("***************************************************")
     print("Optimisation Status={},Objective Value={}".format(str(status), LP.objective_value))
     print("OPTIMAL(0), ERROR(-1), INFEASIBLE(1), UNBOUNDED(2)")
     print("Following stocks from bucket added to kernel:")
     selected_bucket = []
     in_excess_return, in_tr_err, out_excess_return, out_tr_err, portfolio_size = None, None, None, None, None
-    if status.value == 0:
+    if status.value in [0,3]:
         for stock in bucket:
             # print (y[stock].x)
             if y[stock].x > 0:

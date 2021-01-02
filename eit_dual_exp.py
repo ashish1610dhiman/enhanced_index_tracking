@@ -100,7 +100,7 @@ class TestEitDual:
                 src_dual.EIT_kernel.EIT_kernel(kernel, self.C, self.T, self.file, self.lamda, self.nuh, self.xii, \
                                           self.k, self.pho, self.f, self.output, self.w_return, self.w_risk, \
                                           self.w_risk_down, from_root)
-            failure = bool(status.value > 0)
+            failure = bool(status.value not in [0,3])
         except Exception as e:
             print("ERROR in EIT Kernel")
             traceback.print_exc()
@@ -161,7 +161,7 @@ class TestEitDual:
                 print("Error in this bucket")
                 traceback.print_exc()
                 continue
-            if status.value == 0:  # Check if EIT(kernel+bucket) is feasible
+            if status.value in [0,3]:  # Check if EIT(kernel+bucket) is feasible
                 if failure == True:  # check if EIT(Kernel) was in-feasible
                     failure = False
                 # Update lower_bound

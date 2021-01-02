@@ -141,7 +141,8 @@ def EIT_kernel(kernel, C, T, file, lamda, nuh, xii, k, pho, f, output, from_root
     LP += (xsum([d[t] + u[t] for t in range(1, T + 1)]) <= xii * C)
     print("Solving EIT(kernel)\n***************************************************")
     LP.emphasis = 1
-    status = LP.optimize()
+    #LP.max_nodes = 700
+    status = LP.optimize(max_seconds_same_incumbent=100,max_seconds=T*5)
     print("***************************************************\n")
     print("Optimisation Status={},Objective Value={}".format(str(status.value), LP.objective_value))
     print("OPTIMAL(0), ERROR(-1), INFEASIBLE(1), UNBOUNDED(2)")
