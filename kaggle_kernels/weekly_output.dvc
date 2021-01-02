@@ -1,0 +1,5 @@
+outs:
+- md5: 907a18ec60d82bca129baf3b130c70c0.dir
+  size: 196055503
+  nfiles: 507
+  path: weekly_output
