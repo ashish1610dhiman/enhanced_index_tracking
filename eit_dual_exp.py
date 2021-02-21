@@ -232,8 +232,10 @@ class TestEitDual:
                 execution_result=self.step_3(kernel, L, z, Nb, buckets, failure,execution_result,\
                                              from_root=from_root,verbose=verbose)
             else:
+                print("Failure in Step 2b")
                 execution_result = None
         else:
+            print("Failure in Step 1")
             execution_result=None
         if verbose:
             self.print_result()

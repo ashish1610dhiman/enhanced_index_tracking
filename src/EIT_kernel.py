@@ -159,7 +159,7 @@ def EIT_kernel(kernel, C, T, file, lamda, nuh, xii, k, pho, f, output, from_root
         result = result.append(temp, ignore_index=True)
     result.to_csv(output + "/EIT_kernel_result_index_{}.csv".format(file), index=False)
     LP.write(output + "/EIT_kernel_for_index_{}.lp".format(file))
-    if status.value == 0:
+    if status.value in [0,3]:
         in_excess_return, in_tr_err, out_excess_return, out_tr_err,portfolio_size =\
             performance(pd.read_csv(file_path.format(file)),result, C, T)
     else:
