@@ -33,3 +33,7 @@ The Dimension reduction is tested only for mean-variance model, how does it appl
 ### Dec 9
 Formulate combined approach and add results
 
+
+### Feb 28
+Definition of excess return and Tracking Error is slightly different between EIT_basic and EIT_dual.
+But performance metric is same

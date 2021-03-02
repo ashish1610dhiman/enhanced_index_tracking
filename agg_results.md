@@ -55,13 +55,13 @@ Hang Seng | 31 stocks | March 1992 to September 1997
 ### Instance:2
 S&P500 | 500 stocks | Feb 2013 to Mar 2018
 > ####  Instance:2a 
-> un-reduced dataset | daily data | Training = 800 | OOS = 278  
+> un-reduced dataset | daily data | Training = 880 | OOS = 218  
 > ---------------------- Parameter Combinations ----------------------------  
->> pho in [0.05,0.1,0.2]  
->> xii in [1.2,1.3,1.4]  
->> k in [12,16,25]  
->> m in [8,12,16]  
->> nuh in [0.3,0.45,0.6]     
+>> pho in [0.2,0.3]  
+>> xii in [1.1,1.2]  
+>> k in [100,120,140]  
+>> m in [70,90]  
+>> nuh in [0.3,0.35,0.4]     
 > ---------------------- ********************** ----------------------------
 > * EIT-Dual beats old approach ??? times on in-sample metric.
 > * EIT-Dual beats old approach ??? times on in-sample metric.
@@ -84,26 +84,26 @@ S&P500 | 500 stocks | Feb 2013 to Mar 2018
 
 
 > ####  Instance:2c TODO
-> NPCA Reduced | weekly data | Training = ??? | OOS = ???  
+> NPCA Reduced | weekly data | Training = 200 | OOS = 97  
 > ---------------------- Parameter Combinations ----------------------------  
->> pho in [0.05,0.1,0.2]  
->> xii in [1.2,1.3,1.4]  
->> k in [12,16,25]  
->> m in [8,12,16]  
->> nuh in [0.3,0.45,0.6]     
+>> pho in [0.25]  
+>> xii in [1.1]  
+>> k in [70,80]  
+>> m in [50]  
+>> nuh in [0.15,0.2,0.25]     
 > ---------------------- ********************** ----------------------------
-> * EIT-Dual beats old approach ??? times on in-sample metric.
-> * EIT-Dual beats old approach ??? times on in-sample metric.
+> * EIT-Dual beats old approach 100% times on in-sample metric.
+> * EIT-Dual beats old approach 33% times on in-sample metric.
 
  
 > ####  Instance:2d TODO
-> NMF Reduced | weekly data | Training = ??? | OOS = ???  
+> NMF Reduced | weekly data | Training = 200 | OOS = 97  
 > ---------------------- Parameter Combinations ----------------------------  
->> pho in [0.05,0.1,0.2]  
->> xii in [1.2,1.3,1.4]  
->> k in [12,16,25]  
->> m in [8,12,16]  
->> nuh in [0.3,0.45,0.6]     
+>> pho in [0.25]  
+>> xii in [1.1]  
+>> k in [70,80]  
+>> m in [50]  
+>> nuh in [0.15,0.2,0.25]       
 > ---------------------- ********************** ----------------------------
-> * EIT-Dual beats old approach ??? times on in-sample metric.
-> * EIT-Dual beats old approach ??? times on in-sample metric.
+> * EIT-Dual beats old approach 100% times on in-sample metric.
+> * EIT-Dual beats old approach 100% times on in-sample metric.
