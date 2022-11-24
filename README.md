@@ -1,5 +1,7 @@
 
-#Enhanced Index Tracking
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4772978.svg)](https://doi.org/10.5281/zenodo.4772978) [![DVC](https://img.shields.io/badge/-Data_Version_Control-white.svg?logo=data-version-control&style=social)](https://dvc.org/?utm_campaign=badge) [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+
+# Enhanced Index Tracking
 
 ## Introduction
 
@@ -61,7 +63,7 @@ $$
 
 *Additional constraints abstracted for brevity here*
 
-###Dimension Reduction
+### Dimension Reduction
 Dimensionality Reduction is applied to decrease the time-dimension of each of these $$X_{ti}$$. The reduced dimensions for each of the $$X_{ti}$$ are then combined into one on the basis of SVP (Statistical Variance Procedure) which essentially takes a weighted sum of the reduced dimensions with weights being the proportion of variance explained in the original data. Hence we derive a single vector $$f_i$$ of stock prices for each of the $k$ subsets of data. These reduced prices then become the input $$(Reduced Data=\([f_i]_{k* n}\))$$ for our tracking problem.
 
 
